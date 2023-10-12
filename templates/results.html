@@ -1,0 +1,58 @@
+{% extends "layout.html" %}
+
+{% block results %}
+
+<div class="card-title text-center mt-3 pt-3">
+    <h1 class="text-secondary">{{ artist }}</h1>
+</div>
+
+<div class="card form-group m-5" >
+    <form action="/lista" method="POST">
+        <div id="accordion">
+            <!-- accordion album-title -->
+            <div class="accordion" id="accordionPanelsStayOpenExample">
+                {% for album in albums %}
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#{{album['property']}}" aria-expanded="true" aria-controls="{{album['property']}}">
+                            <img src="{{ album['img'] }}" width="30px" height="30px" class="rounded float-start" alt="..."><i>&nbsp&nbsp{{album['title']}}&nbsp&nbsp&nbsp&nbsp - {{album['year']}}</i>
+                        </button>
+                    </h2>
+                    <div id="{{album['property']}}" class="accordion-collapse collapse">
+                        <div class="accordion-body">
+                            <table class="table">
+                                <thead>
+                                    <tr class="table-secondary opacity-50">
+                                        <th scope="col">#</th>
+                                        <th scope="col">Title</th>
+                                        <th scope="col">Diracion</th>
+                                        <th scope="col">Añadir</th>
+                                    </tr>
+                                </thead>
+                                <!-- tracks information -->
+                                <tbody>
+                                    {% for track in album['tracks'] %}
+                                    <tr class="border-secondary">
+                                        <th scope="row">{{loop.index}}</th>
+                                        <td>{{ track['title'] }}</td>
+                                        <td>{{ track['time'] }}</td>
+                                        <td>
+                                            <div class="form-check">
+                                                
+                                                <input class="form-check-input" type="checkbox" name="lista" value="{{ artist }} ¯ {{ album['title'] }} ¯ {{track['title']}} ¯ {{track['time']}}" id="flexCheckDefault">
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %} 
+                                </tbody>
+                            </table>           
+                        </div>
+                    </div>
+                </div>
+                    {% endfor %}  
+            </div>  
+        </div>
+        
+    </form>
+</div>
+{% endblock  %}

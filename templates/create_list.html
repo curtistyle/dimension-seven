@@ -1,0 +1,54 @@
+{% extends "layout.html" %}
+
+{% block create_list %}
+
+<div class="d-flex p-2">
+    <div class="container-fluid row m-0 vh-100 justify-content-center align-items-start p-5">
+        <div class="card shadow w-50">
+            <div class="card-body">
+                <!-- Formulario -->
+                <form action="/create_list" method="POST">
+                    <h3 class="text-center">CREATE LIST</h3>
+                    <!-- Nombre lista -->
+                    <div class="input-group mb-3 pb-1">
+                        <span class="input-group-text" id="basic-addon1"><img src="{{url_for('static', filename='img/clipboard.svg')}}" width="30"></span>
+                        <input type="text" name="name" class="form-control" placeholder="Name list..." aria-label="Username" aria-describedby="basic-addon1" {% if name %}value="{{name}}"{% endif %}>
+                    </div>
+                    <!-- Descripcion-->
+                    <div class="form-floating pb-1">
+                        <textarea name="description" class="form-control text-primary" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 100px" {% if description %}value="{{description}}"{% endif %}></textarea>
+                        <label class="text-primary" for="floatingTextarea2">Description</label>
+                    </div>
+                    <!-- botones -->
+                    <div class="d-flex justify-content-center mt-2">
+                        <button type="submit" class="btn btn-success">Success</button>
+                    </div>
+                    <!-- Si los datos son consistentes, muestra que la lista se agrego exitosamente a la base de datos -->
+                    {% if alert[0] == True %}
+                    <div class="alert alert-dismissible alert-success mt-3">
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        <strong>Well done!</strong> You successfully read <a href="#" class="alert-link">this important alert message</a>.
+                    </div>
+                    {% endif %}
+                    <!-- Si los datos no son consistentes muestra un mensaje de alerta -->
+                    {% if alert[1] == True %}
+                    <div class="alert alert-dismissible alert-danger mt-3">
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        <strong>Oh snap!</strong> <a href="#" class="alert-link">Change a few things up</a> {{consistencia}}
+                    </div>
+                    {% endif %}
+                    <!-- Si la lista existe muestra un mensaje de alerta -->
+                    {% if alert[2] == True %}
+                    <div class="alert alert-dismissible alert-warning mt-3">
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        <h4 class="alert-heading">Warning!</h4>
+                        <p class="mb-0">La lista {{ name }} ya existe en la <strong>Base de datos!</strong>.</p>
+                    </div>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock  %}
