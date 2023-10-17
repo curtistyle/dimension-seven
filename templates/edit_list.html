@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+
+{% block edit_list %}
+<!-- data-bs-theme="light" -->
+
+<form action="/save_list" method="POST">
+
+    <div class="card-body" data-bs-theme="dark">
+        <table  id="table" class="table table-hover ">
+            <thead>
+                <tr class="table-dark">
+                <th scope="col">#</th>
+                <th scope="col">Band</th>
+                <th scope="col">Track</th>
+                <th scope="col">Time</th>
+                <th scope="col">Operators</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for item in lyst %}
+            <tr>
+                <td><input type="hidden" name="order" value="{{item['order']}}">{{item['order']}}</td>
+                <td><input type="hidden" name="artist" value="{{item['artist']}}">{{item['artist']}}</td>
+                <td><input type="hidden" name="track" value="{{item['track']}}">{{item['track']}}</td>
+                <td><input type="hidden" name="time" value="{{item['time']}}">{{item['time']}}</td>
+                <td>
+                    <img src="img/garbage_collector.png" width="25px" height="25px">
+                    <img src="img/info.png" width="25px" height="25px">
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        </table>
+    </div>
+    <div class="card-footer p-2">
+        <button type="button" onclick="upNdown('up');" class="btn btn-outline-success m-2">Up</button>
+        <button type="button" onclick="upNdown('down');" class="btn btn-outline-danger">Down</button>
+    </div>
+    <div>
+        <button type="submit" class="btn btn-danger">Danger</button>
+    </div>
+</form>
+  <script></script>
+{% endblock  %}

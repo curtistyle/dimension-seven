@@ -7,7 +7,7 @@
 </div>
 
 <div class="card form-group m-5" >
-    <form action="/lista" method="POST">
+    <form action="/add_tracks" method="POST">
         <div id="accordion">
             <!-- accordion album-title -->
             <div class="accordion" id="accordionPanelsStayOpenExample">
@@ -38,7 +38,6 @@
                                         <td>{{ track['time'] }}</td>
                                         <td>
                                             <div class="form-check">
-                                                
                                                 <input class="form-check-input" type="checkbox" name="lista" value="{{ artist }} ¯ {{ album['title'] }} ¯ {{track['title']}} ¯ {{track['time']}}" id="flexCheckDefault">
                                             </div>
                                         </td>
@@ -49,10 +48,28 @@
                         </div>
                     </div>
                 </div>
-                    {% endfor %}  
+                {% endfor %}  
             </div>  
         </div>
-        
+        <!-- botones -->
+        {% if state == True %}
+        <div class="container p-3" >
+            <label for="select">Listas</label>
+            <div class="d-flex">
+                <select data-bs-theme="light" name="select" class="form-select mx-2 opacity-75" aria-label="Default select example">
+                    <option selected>Lists of bands</option>
+                    {% for item in lyst_user %}
+                        <option value="{{item[1]}}"> {{ item[1]}} </option>
+                    {% endfor %}
+                </select>  
+                <button type="submit" class="btn btn-outline-success">Success</button>
+            </div>
+            {% if alert %}
+                {% block alert %}
+                {% endblock  %}
+            {% endif %}
+        </div>
+        {% endif %}
     </form>
 </div>
 {% endblock  %}

@@ -44,12 +44,34 @@ def consultar_lista(id_user : int, name : str):
     cur = db.cursor()
     cur.execute("SELECT * FROM lists WHERE id_user = %s AND name = %s", (id_user, name))
     lista = cur.fetchone()
-    cur.close()
+    db.close()
+    print("lista: ", lista)
     if (lista):
-        return True
+        return lista[0]
     else:
-        return False
+        return None
     
+def obtener_listas(id_user):
+    db = conectar_db()
+    cur = db.cursor()
+    cur.execute("SELECT id, name FROM lists WHERE id_user = %s", (id_user,))
+    data = cur.fetchall()
+    db.close()
+    if data:
+        return data
+    else:
+        return None
+    
+def obtener_lista(id_user : int, id_lista):
+    db = conectar_db()
+    cur = db.cursor()
+    cur.execute("SELECT * FROM lists WHERE id = %s AND id_user = %s", (id_lista, id_user))
+    data = cur.fetchone()
+    db.close()
+    if data: 
+        return data
+    else:
+        return None
 
 def agregar_lista(id_user : int, name : str, desciption : str):
     db = conectar_db()
@@ -57,6 +79,8 @@ def agregar_lista(id_user : int, name : str, desciption : str):
     query = "INSERT INTO lists (id_user, name, description) VALUES (%s, %s, %s)"
     values = (id_user, name, desciption)
     cur.execute(query, values)
+    nuevo_id = cur.lastrowid
     db.commit()
     cur.close()
+    return nuevo_id
     

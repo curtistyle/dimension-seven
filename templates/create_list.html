@@ -2,20 +2,20 @@
 
 {% block create_list %}
 
-<div class="d-flex p-2">
-    <div class="container-fluid row m-0 vh-100 justify-content-center align-items-start p-5">
+<div class="d-flex pt-5 mt-5">
+    <div class="container-fluid row m-0 vh-100 justify-content-center align-items-start pt-5 mt-5">
         <div class="card shadow w-50">
             <div class="card-body">
                 <!-- Formulario -->
                 <form action="/create_list" method="POST">
                     <h3 class="text-center">CREATE LIST</h3>
                     <!-- Nombre lista -->
-                    <div class="input-group mb-3 pb-1">
+                    <div class="input-group mb-3 pb-1" data-bs-theme="light">
                         <span class="input-group-text" id="basic-addon1"><img src="{{url_for('static', filename='img/clipboard.svg')}}" width="30"></span>
-                        <input type="text" name="name" class="form-control" placeholder="Name list..." aria-label="Username" aria-describedby="basic-addon1" {% if name %}value="{{name}}"{% endif %}>
+                        <input type="text" name="name" class="form-control text-primary" placeholder="Name list..." aria-label="Username" aria-describedby="basic-addon1" {% if name %}value="{{name}}"{% endif %}>
                     </div>
                     <!-- Descripcion-->
-                    <div class="form-floating pb-1">
+                    <div class="form-floating pb-1" data-bs-theme="light">
                         <textarea name="description" class="form-control text-primary" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 100px" {% if description %}value="{{description}}"{% endif %}></textarea>
                         <label class="text-primary" for="floatingTextarea2">Description</label>
                     </div>

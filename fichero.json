@@ -1,0 +1,31 @@
+{
+  "user": { "id": null, "name": null, "email": null, "nickname": null },
+  "list": { "id": null, "name": null, "amount": 6 },
+  "data": [
+    {
+      "artist": "Metallica",
+      "album": "Garage Inc. DISC II",
+      "track": "Am I Evil?",
+      "order": 5
+    },
+    {
+      "artist": "The Offspring",
+      "album": "Americana",
+      "track": "Have You Ever",
+      "order": 2
+    },
+    {
+      "artist": "Sum 41",
+      "album": "All Killer No Filler",
+      "track": "Motivation",
+      "order": 3
+    },
+    { "artist": "Green Day", "album": "Dookie", "track": "She", "order": 1 },
+    {
+      "artist": "Blink 182",
+      "album": "Greates Hist",
+      "track": "First Date",
+      "order": 6
+    }
+  ]
+}

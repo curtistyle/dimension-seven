@@ -4,81 +4,84 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://bootswatch.com/5/lux/bootstrap.min.css">
+    <link rel="stylesheet" href="https://bootswatch.com/5/sketchy/bootstrap.min.css">
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
-    <link rel="stylesheet" href="style.css">
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css')}}">
     <title>Dimension Seven</title>
 </head>
-<body class="m-0 row vh-100 justify-content-center align-items-center">
-    <!-- nav -->
-    <nav class="navbar order-0 align-self-start navbar-expand-lg bg-dark " data-bs-theme="dark">
+<!-- <body class="m-0 row vh-100 justify-content-center align-items-center"> -->
+<body class="d-grid container align-items-center vh-100">
+    
+        <div class="navbar navbar-expand-lg fixed-top  bg-primary" data-bs-theme="dark">
             <div class="container-fluid">
-                <a class="navbar-brand" href="#">Dimen7ion</a>
+                <a class="navbar-brand m-2" href="#">Dimen7ion</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarColor01">
-                <ul class="navbar-nav me-auto">
-                    <!-- home -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="/">Home
-                        <span class="visually-hidden">(current)</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/search">Search</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Pricing</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">About</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Dropdown</a>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item" href="#">Action</a>
-                            <a class="dropdown-item" href="#">Another action</a>
-                            <a class="dropdown-item" href="#">Something else here</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#">Separated link</a>
-                        </div>
-                    </li>
-                </ul>
-                
-                <div class="d-flex">
-                    <!-- Estado de sesion -->
-                    {% if state == True %}
-                    <!-- Tag usuario activo -->
-                    <ul class="navbar-nav">
+                    <ul class="navbar-nav me-auto">
+                        <!-- home -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="/">Home
+                            <span class="visually-hidden">(current)</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/search">Search</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Pricing</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">About</a>
+                        </li>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">{{nickname}}</a>
+                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Dropdown</a>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="/create_list">Create List</a>
+                                <a class="dropdown-item" href="#">Action</a>
                                 <a class="dropdown-item" href="#">Another action</a>
                                 <a class="dropdown-item" href="#">Something else here</a>
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="#">Separated link</a>
                             </div>
                         </li>
-                    
                     </ul>
-                    <!-- boton log out (cerrar sesion) -->
-                    <a href="/log_out"><button class="btn btn-danger disabled my-2 my-sm-0" type="submit">Log out</button></a>
-                    {% else %}
-                    <!-- boton login (iniciar sesion) -->
-                    <a href="/login"><button class="btn btn btn-primary my-2 my-sm-0" type="submit">Login</button></a>
-                    <!-- boton sign_up (registrase) -->
-                    <a href="/sign_up"><button class="btn btn-light my-2 my-sm-0" type="submit">Sign Up</button></a>
-                    {% endif %}
+                
+                    <div class="d-flex">
+                        <!-- Estado de sesion -->
+                        {% if state == True %}
+                        <!-- Tag usuario activo -->
+                        <ul class="navbar-nav">
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle mx-3" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">{{nickname}}</a>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="/create_list">Create List</a>
+                                    <a class="dropdown-item" href="/edit_list">Edit List</a>
+                                    <a class="dropdown-item" href="/view_lists">View Lists</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="#">Separated link</a>
+                                </div>
+                            </li>
+                        
+                        </ul>
+                        <!-- boton log out (cerrar sesion) -->
+                        <a href="/log_out"><button class="btn btn-danger disabled my-2 my-sm-0" type="submit">Log out</button></a>
+                        {% else %}
+                        <!-- boton login (iniciar sesion) -->
+                        <a href="/login"><button class="btn btn btn-primary my-2 my-sm-0" type="submit">Login</button></a>
+                        <!-- boton sign_up (registrase) -->
+                        <a href="/sign_up"><button class="btn btn-light my-2 my-sm-0" type="submit">Sign Up</button></a>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         </div>
-    </nav>
 
 
-    
-        <div class="m-0 align-self-start row justify-content-center">
+        <!-- <div class="m-0 align-self-start row justify-content-center"> -->
+        
             
             {% block index %}
             {% endblock  %}
@@ -98,10 +101,17 @@
             {% block create_list %}
             {% endblock  %}
 
+            {% block edit_list %}
+            {% endblock  %}
 
-        </div>
+            {% block view_lists %}
+            {% endblock  %}
+
+        
+    <!-- nav navbar navbar-expand-lg bg-body-tertiary-->
+    
     
 
 </body>
-<script src="main.js"></script>
+<script src="{{url_for('static', filename='js/main.js')}}"></script>
 </html>

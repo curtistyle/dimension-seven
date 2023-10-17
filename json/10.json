@@ -1,0 +1,16 @@
+{
+  "user": { "id": 1, "email": "curtis@example.com", "nickname": "Curtis" },
+  "list": {
+    "id": "10",
+    "name": "Lista 3 - Panchera",
+    "amount": 4,
+    "privacy": "danger",
+    "description": "tupa tupa anselmo"
+  },
+  "data": [
+    {"artist": "Red", "album": "Declaration", "track": "Cauterize", "order": 4 },
+    {"artist": "Pennywise", "album": "Society", "track": "Full Circle", "order": 2 },
+    {"artist": "One Minute Silence", "album": "Buy Now... Saved Later", "track": "Holy Man", "order": 3 },
+    {"artist": "Nirvana", "album": "Bleach", "track": "Floyd The Barber", "order": 1 } 
+  ]
+}

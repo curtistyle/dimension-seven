@@ -10,4 +10,4 @@ class Consistency():
         elif (len(name) > 50):
             return f"El nombre de la lista no debe superar los 50 caracteres. ({len(name)})"
         else:
-            return f"El nombre de la lista no debe superar los 50 caracteres ({len(name)}) y la descripcion los 255 caracteres ({len(description)})."            
+            return f"El nombre de la lista no debe superar los 50 caracteres ({len(name)}) y la descripcion los 255 caracteres ({len(description)})."                                               

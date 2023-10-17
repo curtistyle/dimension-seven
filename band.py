@@ -112,12 +112,29 @@ class Album():
     @img.setter
     def img(self, value):
         self.__img = value
+
+class Time():
+    def __init__(self, ms='') -> None:
+        self.__ms : str = ms
+        
+    @property
+    def ms(self):
+        return self.__ms
     
+    @ms.setter
+    def ms(self, value):
+        self.__ms = value
+        
+    def fminseg(self):
+        seg, self.ms = divmod(self.ms, 1000)
+        mints, seg = divmod(seg, 60)  
+        return f'{mints:02}:{seg:02}'
+ 
 class Track():
-    def __init__(self, title='', number=0, time=0):
+    def __init__(self, title='', number=0, time=''):
         self.__title  : str = title
         self.__number : str = number 
-        self.__time   : str = time
+        self.__time   = Time(time)
 
     def __str__(self) -> str:
         return f"number='{self.__number}' title='{self.__title}' time='{self.__time}'"
@@ -153,6 +170,7 @@ class Track():
         """Get `Title` atribute from `Track` object."""
         return self.__title
     
+    # ! EDIT
     @property
     def time(self):
         """Get `Title` atribute from `Track` object."""
@@ -181,16 +199,5 @@ class Track():
             self.__number = value
         else:
             raise ValueError("No puede ser negativo.")
-    
-    def get_time_formatted(self):
-        pass
+  
         
-        
-
-if __name__=="__main__":
-    track = Track("She", 3)
-    
-    print(repr(track))
-    print(str(track))
-    
-    
