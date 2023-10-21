@@ -100,7 +100,8 @@ def add_tracks():
             id_list = consultar_lista(session['id'], lyst_target)
             if id_list:
                 tracks = DataMethods.format_list(tracks)
-                File(str(id_list)).data_insert(lyst_target,error)
+                print("TRACKS", tracks)
+                File(str(id_list)).data_insert(tracks,error)
                 return redirect(url_for("index"))
             else:
                 return redirect(url_for("index"))

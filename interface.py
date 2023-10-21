@@ -11,12 +11,13 @@ class DataMethods():
     def format_list(items : list):
         """Retorna una `lista` con los items formateados. Donde `item` contiene `artista`, `album`, `track`. `list_select` la lista seleccionada que hace referencia al item."""
         lyst = list()
+        print("ITEMS: ", items)
         for item in items:
             words = item.split('¯')
-            lyst.append({'artist': words[0], 'album': words[1], 'track' : words[2]})
+            base = { 'artist': words[0], 'album': words[1], 'track' : words[2], 'time' : words[3] }
+            lyst.append(base)
         return lyst  
 
-    @staticmethod
     def bubbleSortWithTweak(lyst, key):
         n = len(lyst)
         while n > 1:    
@@ -32,7 +33,6 @@ class DataMethods():
             if not swapped: return           
             n -= 1
     
-    @staticmethod
     def binarySearch(target, key, sortedLyst):
         left = 0
         right = len(sortedLyst) - 1
@@ -194,6 +194,8 @@ class File():
         self.fread()
         for item in range(0, len(lyst)):  
             DataMethods.bubbleSortWithTweak(self.__data.get('data'), 'track')
+            print(f"lyst[item]['track']={lyst}")
+            # print(f"self.__data.get('data')={self.__data.get('data')}")
             if DataMethods.binarySearch(lyst[item]['track'], "track", self.__data.get('data')) is None:   
                 amount = self.__data.get('list')['amount']
                 amount += 1

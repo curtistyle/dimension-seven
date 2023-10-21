@@ -9,19 +9,26 @@
         <table  id="table" class="table table-hover ">
             <thead>
                 <tr class="table-dark">
-                <th scope="col">#</th>
-                <th scope="col">Band</th>
-                <th scope="col">Track</th>
-                <th scope="col">Time</th>
-                <th scope="col">Operators</th>
+                <th scope="col"><strong>#</strong></th>
+                <th scope="col"><strong>Band</strong></th>
+                <th scope="col"><strong>Track</strong></th>
+                <th scope="col"><strong>Time</strong></th>
+                <th scope="col"><strong>Operators</strong></th>
                 </tr>
             </thead>
             <tbody>
             {% for item in lyst %}
             <tr>
+                <!-- order -->
                 <td><input type="hidden" name="order" value="{{item['order']}}">{{item['order']}}</td>
-                <td><input type="hidden" name="artist" value="{{item['artist']}}">{{item['artist']}}</td>
-                <td><input type="hidden" name="track" value="{{item['track']}}">{{item['track']}}</td>
+                <!-- artist -->
+                <td class="d-flex flex-column">
+                    <input type="hidden" name="artist" value="{{item['artist']}}">{{item['artist']}}
+                    <input type="hidden" name="album" value="{{item['album']}}"><small class="text-body-secondary">{{item['album']}}</small>
+                </td> 
+                <!-- track -->
+                <td class="align-middle"><input type="hidden" name="track" value="{{item['track']}}">{{item['track']}}</td>
+                <!-- time -->
                 <td><input type="hidden" name="time" value="{{item['time']}}">{{item['time']}}</td>
                 <td>
                     <img src="img/garbage_collector.png" width="25px" height="25px">
