@@ -1,3 +1,5 @@
+// var radio_btn = document.getElementById('btnradio1')
+
 
 // ? view_list.html modal 
 function deletelist(value){
@@ -7,6 +9,8 @@ function deletelist(value){
     list_name.innerHTML = '<label for="">' + value +  '</label>'
     btn_delete.value = value
 }
+
+
 
 
 var index;  // variable to set the selected row indexs
@@ -24,7 +28,7 @@ function getSelectedRow()
             // clear the selected from the previous selected row
             // the first time index is undefined
             if(typeof index !== "undefined"){
-                table.rows[index].classList.toggle("table-active");
+                table.rows[index].classList.toggle("table-dark");
                 
             }
             
@@ -32,7 +36,7 @@ function getSelectedRow()
             
             
 
-            this.classList.toggle("table-active");
+            this.classList.toggle("table-dark");
 
         };
     }

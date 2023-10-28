@@ -6,7 +6,11 @@
 
     {% if data %}
         {% for list in data %}
-            <div class="card border-{{list['privacy']}} mb-3 m-3" style="max-width: 20rem;">
+            {% if list['privacy'] == 'private' %}
+            <div class="card border-danger mb-3 m-3"  style="max-width: 20rem;">
+            {% else %}
+            <div class="card border-success mb-3 m-3" style="max-width: 20rem;">
+            {% endif %}
                 <!-- Nombre de la banda -->
                 <div class="card-header">band name</div>
                 <div class="card-body">
@@ -18,16 +22,16 @@
                     </p>
                     <ul class="list-group">
                         <!-- Cantidad de canciones de la lista -->
-                        <li class="list-group-item list-group-item-{{list['privacy']}} d-flex justify-content-between align-items-center">
+                        <li class="list-group-item list-group-item-info d-flex justify-content-between align-items-center">
                             amount list
                             <span class="badge bg-primary rounded-pill">{{list['amount']}}</span>
                         <!-- Tiempo total de la lista -->
-                        <li class="list-group-item list-group-item-{{list['privacy']}} d-flex justify-content-between   align-items-center">
+                        <li class="list-group-item list-group-item-info d-flex justify-content-between   align-items-center">
                             total time
                             <span class="badge bg-primary rounded-pill">5</span>
                         </li>
                         <!-- Genero dominante de la lista -->
-                        <li class="list-group-item list-group-item-{{list['privacy']}} d-flex justify-content-between   align-items-center">
+                        <li class="list-group-item list-group-item-info d-flex justify-content-between   align-items-center">
                             dominant gender
                             <span class="badge bg-primary rounded-pill">Punk</span>
                         </li>

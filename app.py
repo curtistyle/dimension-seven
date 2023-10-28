@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, session, redirect, url_for
-from database import consultar_usuario, agregar_usuario, agregar_lista, consultar_lista, obtener_listas, obtener_lista
+from database import consultar_usuario, agregar_usuario, agregar_lista, consultar_lista, obtener_listas, obtener_lista, eliminar_lista
 from config import SECRET_KEY
 from interface import mySpotify, File, DataMethods
 from data_consistency import Consistency
@@ -114,7 +114,7 @@ def create_list():
             return render_template("create_list.html", state=estado_usuario(),alert=None, nickname=session['nickname'])   
     if request.method == 'POST':
         if estado_usuario():
-            alert =[False, False, False]
+            alert = [False, False, False]
             name = request.form['name']
             description = request.form['description']
             id_user = session['id']  
@@ -133,34 +133,43 @@ def create_list():
                     alert[2] = True
                     return render_template("create_list.html", state=estado_usuario(), alert=alert, nickname=session['nickname'], name_list=name, consistencia=consistencia) 
             else:
-                # ! Si los datos no son consistentes:
+                # ? Si los datos no son consistentes:
                 alert[1] = True
                 return render_template("create_list.html", state=estado_usuario(), alert=alert, nickname=session['nickname'], name_list=name, consistencia=consistencia, name=name, description=description)     
   
-@app.route("/edit_list", methods=['POST'])  
+@app.route("/edit_list", methods=['POST', 'GET'])  
 def edit_list():
     if estado_usuario():
         if request.method == 'POST':
             list_target = request.form["edit"]
             session['list_target'] = list_target
-            print("lista target: ", list_target)
-            lyst = File(str(list_target)).get_list() 
-            return render_template("edit_list.html", state=True, nickname=session['nickname'], lyst=lyst)
+            data = File(str(list_target)).get_data() 
+            info = File(str(list_target)).get_info()
+            return render_template("edit_list.html", state=True, nickname=session['nickname'], data=data, info=info)
+        if request.method == 'GET':
+            data = File(str(session['list_target'])).get_data() 
+            info = File(str(session['list_target'])).get_info()
+            return render_template("edit_list.html", state=True, nickname=session['nickname'], data=data, info=info)
+
 
 @app.route("/save_list", methods=['POST'])  
 def save_list():
     if estado_usuario():
         if request.method == 'POST':
-            order = request.form.getlist('order')
-            artist = request.form.getlist('artist')
-            track = request.form.getlist('track')
+            name = request.form['list_name']
+            description = request.form['description']
+            privacy = request.form.get('btnradio')
             
-            # ! falta
-            File(str(session['list_target']))
-            
-            # lyst = File(str(list_target)).get_list()  lyst=lyst)
-            return render_template("edit_list.html", state=True, nickname=session['nickname'])  
-  
+            print(f" >>> {privacy=}")
+            print( f"{name=} - {description=}" )
+            lyst = DataMethods.kwargsLists_to_dictionaryList( artist=request.form.getlist('artist'),  
+                                                    album=request.form.getlist('album'),
+                                                    track=request.form.getlist('track'),
+                                                    order=DataMethods.listString_to_listInt(request.form.getlist('order')), 
+                                                    time=request.form.getlist('time') )
+            File(str(session['list_target'])).overwrite( lyst, name=name, description=description, privacy=privacy )
+            # return render_template("edit_list.html", state=True, nickname=session['nickname'], lyst=lyst)  
+            return redirect( url_for("edit_list") )
             
 @app.route("/view_lists", methods=['GET', 'POST'])
 def view_lists():
@@ -177,9 +186,12 @@ def view_lists():
 def delete_list():
     if estado_usuario():
         if request.method == 'POST':
-            data = request.form['btn_delete']
-            print(data)
-            return redirect(url_for("view_lists"))
+            name_list = request.form['btn_delete']
+            id_list = consultar_lista( session['id'], name_list )
+            if id_list is not None:
+                eliminar_lista( id_list )
+                File(str(id_list)).rename_file(str(id_list) + "_del")
+                return redirect(url_for("view_lists"))
 
 @app.route("/test", methods=['GET'])
 def test():

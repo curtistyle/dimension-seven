@@ -1,5 +1,6 @@
 from spotipy import Spotify, SpotifyClientCredentials
 from band import Album, Artist, Track
+from os import rename
 import json 
 
 
@@ -18,6 +19,29 @@ class DataMethods():
             lyst.append(base)
         return lyst  
 
+    @staticmethod
+    def listString_to_listInt( lyst : list ):
+        lyst_str = lyst.copy()
+        lyst_int = map( int, lyst_str )
+        lyst_int = list( lyst_int )
+        return lyst_int
+    
+    @staticmethod
+    def kwargsLists_to_dictionaryList(**kwargs):
+        model_dyct = dict()
+        lyst = list()
+        matrix = list()
+        for key, item in kwargs.items():
+            model_dyct.update( {key : None} )
+            matrix.append( item )
+        for col in range( 0, len( matrix[ 0 ] ) ):
+            new_dyct = model_dyct.copy()
+            for row in range( 0, len( matrix ) ):
+                keys = list( new_dyct.keys() )
+                new_dyct[ keys[ row ] ] = matrix[ row ][ col ]
+            lyst.append( new_dyct )    
+        return lyst
+    
     def bubbleSortWithTweak(lyst, key):
         n = len(lyst)
         while n > 1:    
@@ -55,6 +79,7 @@ class DataMethods():
     
 
 class File():
+    
     type_file = {
         "user" : { 'id' : None,  "email": None, "nickname": None},
         "list" : { 'id' : None, 'name' : None, 'amount' : 0, 'privacy' : "danger", "description" : None },
@@ -156,41 +181,51 @@ class File():
             self.data.get("list")[key] = item
         self.fwrite()
       
-        # ! falta
-    def update_data(self, **kwargs):
+        # ! falta, refactorizar
+    def overwrite(self, data : list, **info ):
         self.fread()
-        items = self.__data.get('data')
-      
-                
-            
-        
+        self.__data['data'] = data
+        for key, item in info.items():
+            if key in self.__data['list'].keys():
+                self.__data['list'][key] = item
         self.fwrite()
-
+    
+    def rename_file(self, value):
+        original_path = self.__path
+        new_path = "json/" + value + ".json"
+        try:
+            rename(original_path, new_path)
+        except FileNotFoundError:
+            print( "The origial file no exist!" )
+        except PermissionError:
+            print( "You do not have permission to rename the file." )
+            
+    
     
     def data_append(self, **kwargs):
         data = dict()
         for key, item in kwargs.items():
             data.update({key : item})
         self.fread()
-        DataMethods.bubbleSortWithTweak(self.data.get('data'), 'track')
-        if DataMethods.binarySearch(data['track'], "track", self.data.get('data')) is None:  
+        DataMethods.bubbleSortWithTweak(self.data__.get('data'), 'track')
+        if DataMethods.binarySearch(data['track'], "track", self.data__.get('data')) is None:  
             self.inc_amount()
             data.update({"order" : self.get_amount() })          
-            self.data.get('data').append(data)
+            self.data__.get('data').append(data)
             self.fwrite()
             return True
         else:
             return False
 
     def get_amount(self):
-        return int(self.data.get("list")['amount'])
+        return int(self.data__.get("list")['amount'])
     
     def inc_amount(self):
         amount = self.get_amount() + 1
         print(amount)
         self.data.get("list")['amount'] = amount
         
-    def data_insert(self, lyst : list, error : list):       
+    def data_insert(self, lyst : list, error=[]):       
         self.fread()
         for item in range(0, len(lyst)):  
             DataMethods.bubbleSortWithTweak(self.__data.get('data'), 'track')
@@ -224,7 +259,12 @@ class File():
         else:
             return False
     
-    def get_list(self):
+    
+    def get_info(self):
+        self.fread()
+        return self.__data.get('list')
+    
+    def get_data(self):
         self.fread()
         DataMethods.bubbleSortWithTweak(self.__data.get('data'), 'order')
         return self.__data.get('data')

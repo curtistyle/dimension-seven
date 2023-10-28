@@ -1,16 +1,1 @@
-{
-  "user": { "id": 1, "email": "curtis@example.com", "nickname": "Curtis" },
-  "list": {
-    "id": "9",
-    "name": "Lista 2 - The Offspring",
-    "amount": 4,
-    "privacy": "danger",
-    "description": "This is an incomplete list of songs released by American punk rock group the Offspring in alphabetical order."
-  },
-  "data": [ 
-    {"artist": "Metallica", "album": "Garage Inc. DISC II", "track": "Am I Evil?", "order": 4 },
-    {"artist": "Megadeth", "album": "Countdown To Extinction", "track": "Skin O' My Teeth", "order": 2 },
-    {"artist": "Megadeth", "album": "Peace Sells... But Who's Buying?", "track": "Peace Sells", "order": 3 },
-    {"artist": "Millencolin", "album": "Kingwood", "track": "Shut You Out", "order": 1 }  
-  ]
-}
+{"user": {"id": 1, "email": "curtis@example.com", "nickname": "Curtis"}, "list": {"id": "9", "name": "Lista 2 - The Offspring", "amount": 4, "privacy": "public", "description": "This is an incomplete list of songs released by American punk rock group the Offspring in alphabetical order."}, "data": [{"artist": "Millencolin", "album": "Kingwood", "track": "Shut You Out", "order": 1, "time": ""}, {"artist": "Megadeth", "album": "Countdown To Extinction", "track": "Skin O' My Teeth", "order": 2, "time": ""}, {"artist": "Megadeth", "album": "Peace Sells... But Who's Buying?", "track": "Peace Sells", "order": 3, "time": ""}, {"artist": "Metallica", "album": "Garage Inc. DISC II", "track": "Am I Evil?", "order": 4, "time": ""}]}

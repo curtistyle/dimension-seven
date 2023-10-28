@@ -3,28 +3,73 @@
 {% block edit_list %}
 <!-- data-bs-theme="light" -->
 
-<form action="/save_list" method="POST">
 
-    <div class="card-body" data-bs-theme="dark">
-        <table  id="table" class="table table-hover ">
+<div style="min-height:100px;"></div>
+<form action="/save_list" method="POST">
+    <div class="card border-primary mb-3" style="max-width:100%;">
+        <div class="card-header">Header</div>
+            <div class="card-header">
+                <!--  style="max-width:50%;" -->
+                <div class="form-group">
+                    <!-- NAME -->
+                    <label class="col-form-label mt-2 text-info" for="inputDefault">Name list</label>
+                    <input type="text" class="form-control mx-2" name="list_name" value="{{info['name']}}" id="inputDefault" >
+                </div>
+                <!-- DESCRIPTION -->
+                <div class="form-group">
+                    <label for="exampleTextarea" class="form-label mt-2 text-info">Description</label>
+                    <textarea name="description" class="form-control mx-2" id="exampleTextarea" rows="3">{{info['description']}}</textarea>
+                </div>
+                
+                <!-- button radio -->
+                <div class="form-group d-blocck ">
+                    <div class="form-label">
+                        <label class="mt-2 text-info" for="inputDefault">Privacy list</label>
+                    </div>
+                    <div class=" btn-group mx-2" role="group" aria-label="Basic radio toggle button group">
+                        {% if info['privacy'] == 'private' %}
+                            <!-- PRIVATE  1 cheked-->
+                            <input value="private" type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
+                            <label class="btn btn-outline-danger" for="btnradio1">Private</label>
+                            <!-- PUBLIC  2-->
+                            <input value="public" type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
+                            <label class="btn btn-outline-success" for="btnradio2">Public</label>
+                        {% else %}
+                            <!-- PRIVATE  1-->
+                            <input value="private" type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off">
+                            <label class="btn btn-outline-danger" for="btnradio1">Private</label>
+                            <!-- PUBLIC  2-->
+                            <input value="public" type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off" checked>
+                            <label class="btn btn-outline-success" for="btnradio2">Public</label>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+
+      </div>
+
+    <div class="card-body" data-bs-theme="light">
+        <table  id="table" class="table table-hover">
             <thead>
-                <tr class="table-dark">
-                <th scope="col"><strong>#</strong></th>
-                <th scope="col"><strong>Band</strong></th>
-                <th scope="col"><strong>Track</strong></th>
-                <th scope="col"><strong>Time</strong></th>
-                <th scope="col"><strong>Operators</strong></th>
+                <tr class="table-primary">
+                    <th scope="col"><strong>#</strong></th>
+                    <th scope="col"><strong>Band/album</strong></th>
+                    <th scope="col"><strong>Track</strong></th>
+                    <th scope="col"><strong>Time</strong></th>
+                    <th scope="col"><strong>Operators</strong></th>
                 </tr>
             </thead>
             <tbody>
-            {% for item in lyst %}
-            <tr>
+            {% for item in data %}
+            <tr class="table-dark">
                 <!-- order -->
                 <td><input type="hidden" name="order" value="{{item['order']}}">{{item['order']}}</td>
-                <!-- artist -->
                 <td class="d-flex flex-column">
+                    <!-- artist -->
                     <input type="hidden" name="artist" value="{{item['artist']}}">{{item['artist']}}
-                    <input type="hidden" name="album" value="{{item['album']}}"><small class="text-body-secondary">{{item['album']}}</small>
+                    <!-- album -->
+                    <input type="hidden" name="album" value="{{item['album']}}"><small class="text-secondary">{{item['album']}}</small>
                 </td> 
                 <!-- track -->
                 <td class="align-middle"><input type="hidden" name="track" value="{{item['track']}}">{{item['track']}}</td>
@@ -39,12 +84,14 @@
         </tbody>
         </table>
     </div>
-    <div class="card-footer p-2">
-        <button type="button" onclick="upNdown('up');" class="btn btn-outline-success m-2">Up</button>
-        <button type="button" onclick="upNdown('down');" class="btn btn-outline-danger">Down</button>
-    </div>
-    <div>
-        <button type="submit" class="btn btn-danger">Danger</button>
+    <div class="d-flex justify-content-between align-content-center">
+        <div class="">
+            <button type="button" onclick="upNdown('up');" class="btn btn-outline-success mx-2">Up</button>
+            <button type="button" onclick="upNdown('down');" class="btn btn-outline-danger">Down</button>
+        </div>
+        <div class="">
+            <button type="submit" class="btn btn-success">Save</button>
+        </div>
     </div>
 </form>
   <script></script>

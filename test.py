@@ -48,35 +48,35 @@
 #     ]
 # }
 
-# def swap(lyst, i, j):
+# def swap(matrix, i, j):
 #      """Exchanges the items at positions i and j."""
-#      # You could say lyst[i], lyst[j] = lyst[j], lyst[i]
+#      # You could say matrix[i], matrix[j] = matrix[j], matrix[i]
 #      # but the following code shows what is really going on
-#      temp = lyst[i]
-#      lyst[i] = lyst[j]
-#      lyst[j] = temp
+#      temp = matrix[i]
+#      matrix[i] = matrix[j]
+#      matrix[j] = temp
 
-# def bubbleSortWithTweak(lyst, key):
-#     n = len(lyst)
+# def bubbleSortWithTweak(matrix, key):
+#     n = len(matrix)
 #     while n > 1:
 #         swapped = False
 #         i = 1
 #         while i < n:
-#             if lyst[i][key] < lyst[i - 1][key]:   # Exchange if needed
-#                 swap(lyst, i, i - 1)
+#             if matrix[i][key] < matrix[i - 1][key]:   # Exchange if needed
+#                 swap(matrix, i, i - 1)
 #                 swapped = True
 #             i += 1
 #         if not swapped: return            # Return if no swaps
 #         n -= 1
 
-# def binarySearch(target, key, sortedLyst):
+# def binarySearch(target, key, sortedmatrix):
 #     left = 0
-#     right = len(sortedLyst) - 1
+#     right = len(sortedmatrix) - 1
 #     while left <= right:
 #         midpoint = (left + right) // 2
-#         if target == sortedLyst[midpoint][key]:
+#         if target == sortedmatrix[midpoint][key]:
 #             return midpoint
-#         elif target < sortedLyst[midpoint][key]:
+#         elif target < sortedmatrix[midpoint][key]:
 #             right = midpoint - 1
 #         else:
 #             left = midpoint + 1
@@ -141,9 +141,9 @@
 # print(error)
 
 
-from database import agregar_lista
+# from database import agregar_lista
 
-print(agregar_lista(1, 'Lista 5', "asd"))
+# print(agregar_lista(1, 'Lista 5', "asd"))
 
 
 # print(File('fichero').data_append(artist='Blink 182', album='Greates Hist', track='First Date'))
@@ -179,3 +179,71 @@ print(agregar_lista(1, 'Lista 5', "asd"))
 #     }
 #   ]
 # }
+
+
+# def to_list(**kwargs):
+#     matrix = [{}] * 
+#     print( f"{len(kwargs)=}" )
+#     for key, items in kwargs.items():
+#         print( f"{key=} - {items=}" )
+#         for item in items:
+#             print( " + ",item )
+        
+# to_list(order=order, artist=artist, album=album, track=track)
+
+order = [1, 2, 3, 4, 5]
+artist = ['Green Day', 'Pantera', 'Nirvana', 'The Offspring', 'Sum 41']
+album = ['Dookie', 'Cowboys From Hell', 'Bleach', 'Americana', 'All the Good Shit']
+track = ['She', 'Domination', 'School', 'The Kids Arent AlRight', 'Still Waiting']
+time = ['02:23', '01:59', '02:43', '02:07', '03:01']
+
+# def to_list(*args):
+#     for item in args:
+#         print(item)
+        
+# to_list(order, artist, album, track)
+
+# def to_list(**kwargs):
+#     model_dyct = dict()
+#     lyst = list()
+#     matrix = list()
+
+#     for key, item in kwargs.items():
+#         model_dyct.update( {key : None} )
+#         matrix.append( item )
+     
+#     for col in range( 0, len( matrix[0] ) ):
+#         new_dyct = model_dyct.copy()
+#         for row in range( 0, len( matrix ) ):
+#             keys = list( new_dyct.keys() )
+#             new_dyct[ keys[ row ] ] = matrix[ row ][ col ]
+#         lyst.append( new_dyct )    
+         
+#     return lyst
+        
+# print( to_list(order=order, artist=artist, album=album, track=track, time=time) )
+
+# dyct = { 'order' : 1, 'artist': 'Green Day', 'album': 'Dookie', 'track': 'She' }
+
+# print( dyct.keys() )
+
+
+
+# from interface import File
+
+# File('8').rename_file('_del')
+
+lyst = ["1", "2", "3", "4"]
+print( lyst )
+lyst = map( int, lyst )
+print( list(lyst) )
+
+# print( int( lyst ) )
+
+
+# for index, item in iter(map(lyst)):
+#     print( f"{index=} - {item=}" )
+
+
+
+

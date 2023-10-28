@@ -23,11 +23,13 @@ def consultar_usuario(email : str, password : str):
     cur = db.cursor()
     cur.execute("SELECT * FROM users WHERE email = %s AND password = %s", (email, password))
     user = cur.fetchone()
+    print( f"{user=}" )
     cur.close()
     if user:
         return True, user[5], user[0]
     else:
         return False
+
 
 def agregar_usuario(nickname, name, surname, email, password):
     db = conectar_db()
@@ -84,3 +86,9 @@ def agregar_lista(id_user : int, name : str, desciption : str):
     cur.close()
     return nuevo_id
     
+def eliminar_lista( id_list : int ):
+    db = conectar_db()
+    cur = db.cursor()
+
+    cur.execute("DELETE FROM lists WHERE id=%s", (id_list, ))
+    db.commit()
