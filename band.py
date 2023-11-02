@@ -200,4 +200,6 @@ class Track():
         else:
             raise ValueError("No puede ser negativo.")
   
-        
+    @staticmethod
+    def time_accumulator( time : str, total_time : str ):
+        ...

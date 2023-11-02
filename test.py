@@ -279,6 +279,38 @@ time = ['02:23', '01:59', '02:43', '02:07', '03:01']
 
 # print( error )
 
-from database import actualizar_usuario
+# from database import actualizar_usuario
 
-actualizar_usuario( 2, 'Seba', 'Maldona', 'Curtis', 'guitar' )
+# actualizar_usuario( 2, 'Seba', 'Maldona', 'Curtis', 'guitar' )
+
+total_time = "0"
+time = ["01:51", "02:22", "03:45"]
+
+
+def time_to_dict():
+    pass
+
+def time_accumulator( time : str, total_time : str ):
+    pass
+
+def m( asd ):
+    ...
+    
+tiempo = "01:02:22"
+
+total = { "hora" : None, "minuto" : None, "segundo" : None }
+
+horas, minutos, segundos = "","",""
+
+if( len( tiempo.split(":") ) == 2 ):
+    minutos, segundos = tiempo.split(":")
+elif( len( tiempo.split(":") ) == 3 ):
+    horas, minutos, segundos = tiempo.split(":")
+
+print( f"{horas=}, {minutos=}, {segundos=}" )
+
+horas = int(horas)
+minutos = int(minutos)
+segundos = int(segundos)
+
+print( f"{horas=}, {minutos=}, {segundos=}" )

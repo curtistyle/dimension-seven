@@ -163,8 +163,6 @@ def edit_profile():
             
             # actualiza db
             actualizar_usuario( session['id'], data_user['firs_name'], data_user['last_name'], data_user['user_name'], data_user['role'] )
-           
-            
             
             return redirect( url_for("edit_profile") )
 
@@ -191,7 +189,6 @@ def save_list():
 def view_lists():
     if estado_usuario():
         if request.method == 'GET':
-            data = []
             lysts_db = obtener_listas( session['id'] )
             data = File.get_lists( lysts_db )
             return render_template("view_lists.html", state=True, nickname=session['nickname'], data=data)

@@ -82,7 +82,7 @@ class File():
     
     type_file = {
         "user" : { 'id' : None,  "email": None, "nickname": None},
-        "list" : { 'id' : None, 'name' : None, 'amount' : 0, 'privacy' : "danger", "description" : None },
+        "list" : { 'id' : None, 'name' : None, 'amount' : 0, 'total_time' : None, 'privacy' : "danger", "description" : None },
         "data" : []
     }
     
@@ -227,13 +227,17 @@ class File():
         
     def data_insert(self, lyst : list, error=[]):       
         self.fread()
-        for item in range(0, len(lyst)):  
+        for item in range(0, len(lyst)):
+            # ! ordena la lista por nombre de cancion  
             DataMethods.bubbleSortWithTweak(self.__data.get('data'), 'track')
             print(f"lyst[item]['track']={lyst}")
-            # print(f"self.__data.get('data')={self.__data.get('data')}")
+            
             if DataMethods.binarySearch(lyst[item]['track'], "track", self.__data.get('data')) is None:   
                 amount = self.__data.get('list')['amount']
                 amount += 1
+                
+                total_time = self.get_data('list')['total_time']
+                
                 lyst[item].update({'order' : amount})
                 self.__data.get('list')['amount'] = amount
                 self.__data.get('data').append(lyst[item])
