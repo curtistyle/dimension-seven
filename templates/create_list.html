@@ -23,28 +23,16 @@
                     <div class="d-flex justify-content-center mt-2">
                         <button type="submit" class="btn btn-success">Success</button>
                     </div>
+                    
                     <!-- Si los datos son consistentes, muestra que la lista se agrego exitosamente a la base de datos -->
-                    {% if alert[0] == True %}
-                    <div class="alert alert-dismissible alert-success mt-3">
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                        <strong>Well done!</strong> You successfully read <a href="#" class="alert-link">this important alert message</a>.
-                    </div>
-                    {% endif %}
-                    <!-- Si los datos no son consistentes muestra un mensaje de alerta -->
-                    {% if alert[1] == True %}
-                    <div class="alert alert-dismissible alert-danger mt-3">
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                        <strong>Oh snap!</strong> <a href="#" class="alert-link">Change a few things up</a> {{consistencia}}
-                    </div>
-                    {% endif %}
-                    <!-- Si la lista existe muestra un mensaje de alerta -->
-                    {% if alert[2] == True %}
-                    <div class="alert alert-dismissible alert-warning mt-3">
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                        <h4 class="alert-heading">Warning!</h4>
-                        <p class="mb-0">La lista {{ name }} ya existe en la <strong>Base de datos!</strong>.</p>
-                    </div>
-                    {% endif %}
+                    
+                    {% for alert in alerts %}
+                        <div class="alert alert-dismissible alert-{{alert['style_box']}} mt-3">
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            <strong>Mensaje!</strong> {{alert['message']}}
+                        </div>
+                    {% endfor %}
+
                 </form>
             </div>
         </div>

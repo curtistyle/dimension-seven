@@ -233,10 +233,10 @@ time = ['02:23', '01:59', '02:43', '02:07', '03:01']
 
 # File('8').rename_file('_del')
 
-lyst = ["1", "2", "3", "4"]
-print( lyst )
-lyst = map( int, lyst )
-print( list(lyst) )
+# lyst = ["1", "2", "3", "4"]
+# print( lyst )
+# lyst = map( int, lyst )
+# print( list(lyst) )
 
 # print( int( lyst ) )
 
@@ -244,6 +244,41 @@ print( list(lyst) )
 # for index, item in iter(map(lyst)):
 #     print( f"{index=} - {item=}" )
 
+# from database import modificar_privacy_en_lista
+
+# modificar_privacy_en_lista( 10, "Publico" )
+
+# from data_consistency import AlertMessages
 
 
 
+# try:
+#     AlertMessages("asd")
+# except Exception as e:
+#     print(e)
+
+
+
+# from database import obtener_usuario
+
+# print( obtener_usuario( 1 ) )
+
+# from data_consistency import AlertMessages
+
+# name_list = ''
+# description = ''
+# for i in range( 0, 50 ):
+#     name_list += str(i)
+# for j in range( 0 , 270 ):
+#     description += str(j)
+
+# print( len( name_list ) )
+# print( len( description ) )
+
+# error = AlertMessages._view_list( name_list, description, 0 )
+
+# print( error )
+
+from database import actualizar_usuario
+
+actualizar_usuario( 2, 'Seba', 'Maldona', 'Curtis', 'guitar' )

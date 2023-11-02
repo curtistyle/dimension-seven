@@ -1,3 +1,4 @@
+from interface import DataMethods
 class Consistency():
     
     # TODO: Agregar Lista
@@ -10,4 +11,63 @@ class Consistency():
         elif (len(name) > 50):
             return f"El nombre de la lista no debe superar los 50 caracteres. ({len(name)})"
         else:
-            return f"El nombre de la lista no debe superar los 50 caracteres ({len(name)}) y la descripcion los 255 caracteres ({len(description)})."                                               
+            return f"El nombre de la lista no debe superar los 50 caracteres ({len(name)}) y la descripcion los 255 caracteres ({len(description)})."      
+ 
+    @staticmethod
+    def _agregar_lista( name_list : str, description : str ):
+        error = [None]
+        if ( len( name_list ) > 50 ):
+            error.append( f"'name_list' No se puede exeder de los 50 caracteres." )
+        if ( len( description ) > 255 ):
+            error.append( f"'description' No se puede exeder de los 255 caracteres." )
+        return error 
+ 
+    def alcualizar_usuario( first_name : str, last_name : str, user_name : str ):
+        error = [None]
+        if ( len( first_name ) > 20 ):
+            error.append( f"'first_name' No se puede exeder de los 20 caracteres." )
+        if ( len( last_name ) > 20 ):
+            error.append( f"'last_name' No puede exeder a los 20 caracteres." )
+        if ( len( user_name ) > 20 ):
+            error.append( f"'user_name' No puede exeder a los 20 caracteres." )
+        return error
+           
+class AlertMessages:
+    
+    # @staticmethod
+    # def view_list( consistencia : str, id_lista : int ):
+    #     alert = { "message" : None, "style_box" : None, "id_lista" : None }
+    #     if (consistencia == None):
+    #         if (id_lista == None):
+    #             alert['message'] = f"La lista se agrego existosamente!"
+    #             alert['style_box'] = "success"
+    #         else:
+    #             alert['message'] = f"La lista ya existe!"
+    #             alert['style_box'] = "warning"
+    #     else:
+    #         alert['message'] = f"Hay un error de tipeo!. " + consistencia
+    #         alert['style_box'] = "danger"
+    #     return alert
+        
+    def _view_list( name_list : str, description : str, id_list : int ):
+        error = { "message" : None, "style_box" : None, "id_lista" : None }
+        errors = []
+        if ( len( name_list ) > 50 ):
+            error['message'] = f"'name_list' No puede exeder los 50 caracteres. c({len( name_list )})"
+            error['style_box'] = "warning"
+            errors.append( error.copy() )
+        if ( len( description ) > 255 ):
+            error['message'] = f"'description' No puede exeder los 50 caracteres. c({len( description )})"
+            error['style_box'] = "warning"
+            errors.append( error.copy() )
+        if ( id_list == None ):
+            error['message'] = f"La lista '{name_list}'. Se agrego exitosamente!"
+            error['style_box'] = "succeles"
+            errors.append( error.copy() )
+        else:
+            error['message'] = f"La lista '{name_list}'. Ya existe!"
+            error['style_box'] = "danger"
+            errors.append ( error.copy() )
+        return errors
+    
+    

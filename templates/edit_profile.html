@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+
+{% block edit_profile %}
+<div class="card p-3">
+    <form class="row g-3" method="POST">
+        <!-- FIRST_NAME -->
+        <div class="col-md-4">
+            <label for="validationDefault01" class="form-label">First name</label>
+            <input name="first_name" type="text" class="form-control" id="validationDefault01" value="{{data[3]}}" required>
+        </div>
+        <!-- LASTNAME -->
+        <div class="col-md-4">
+            <label for="validationDefault02" class="form-label">Last name</label>
+            <input name="last_name" type="text" class="form-control" id="validationDefault02" value="{{data[4]}}" required>
+        </div>
+        <!-- EMAIL -->
+        <div class="col-md-4">
+            <label for="validationDefaultEmail" class="form-label">Email</label>
+            <input type="email" class="form-control" id="validationDefaultEmail" aria-describedby="inputGroupPrepend2" value="{{data[1]}}" readonly="">
+        </div>
+        <!-- USERNAME -->
+        <div class="col-md-3">
+            <label for="validationDefaultUsername" class="form-label">Username</label>
+            <div class="input-group">
+                <span class="input-group-text" id="inputGroupPrepend2">@</span>
+                <input name="user_name" type="text" class="form-control" id="validationDefaultUsername" aria-describedby="inputGroupPrepend2" value="{{data[5]}}" required>
+            </div>
+        </div>
+        <!-- ROLE JUAZ -->
+        <div class="col-md-3">
+            <label for="validationDefault04" class="form-label">Role</label>
+            <select name="role" class="form-select" id="validationDefault04" required>
+                <option selected disabled value="">Choose...</option>
+                <option value="Panteroso">Panteroso</option>
+                <option value="RolingaPanteroso">RolingaPanteroso</option>
+                <option value="Glam">Glam</option>
+                <option value="Punki">Punki</option>
+                <option value="PunkiSkater">PunkiSkater</option>
+                <option value="PunkiChupin">PunkiChupin</option>
+                <option value="PunkiPantalonesRotos">PunkiPantalonesRotos</option>
+                <option value="SeguidoraDelRB0">SeguidoraDelRB0</option>
+
+            </select>
+        </div>
+>
+        <div class="col-12">
+            <button class="btn btn-primary" type="submit" >Save changes</button>
+        </div>
+    </form>
+</div>
+
+
+{% endblock  %}

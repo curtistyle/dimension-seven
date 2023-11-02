@@ -57,8 +57,8 @@
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle mx-3" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">{{nickname}}</a>
                                 <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="/edit_profile">Edit Profile</a>
                                     <a class="dropdown-item" href="/create_list">Create List</a>
-                                    <a class="dropdown-item" href="/edit_list">Edit List</a>
                                     <a class="dropdown-item" href="/view_lists">View Lists</a>
                                     <div class="dropdown-divider"></div>
                                     <a class="dropdown-item" href="#">Separated link</a>
@@ -110,6 +110,8 @@
             {% block list_public %}
             {% endblock  %}
             
+            {% block edit_profile %}
+            {% endblock  %}
     <!-- nav navbar navbar-expand-lg bg-body-tertiary-->
     
     

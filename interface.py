@@ -257,8 +257,7 @@ class File():
             DataMethods.reorder(self.data.get('data'),"order", order)
             return True
         else:
-            return False
-    
+            return False       
     
     def get_info(self):
         self.fread()
@@ -269,6 +268,14 @@ class File():
         DataMethods.bubbleSortWithTweak(self.__data.get('data'), 'order')
         return self.__data.get('data')
         
+    @staticmethod
+    def get_lists( ids_lists : list ) -> list:
+        """ get lists of multiples files"""
+        lyst = []
+        for id_list in ids_lists:
+            item = File( str( id_list[0] ) ).data.get( 'list' ) 
+            lyst.append( item )
+        return lyst
 class mySpotify():
     # credenciales de la aplicacion
     __client_id = "aad4ffcc488644c8ac36c765382751be"

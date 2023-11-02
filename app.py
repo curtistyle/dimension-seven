@@ -1,8 +1,8 @@
 from flask import Flask, render_template, request, session, redirect, url_for
-from database import consultar_usuario, agregar_usuario, agregar_lista, consultar_lista, obtener_listas, obtener_lista, eliminar_lista
+from database import consultar_usuario, agregar_usuario, agregar_lista, consultar_lista, obtener_listas, obtener_lista, eliminar_lista, modificar_privacy_en_lista, obtener_usuario, actualizar_usuario
 from config import SECRET_KEY
 from interface import mySpotify, File, DataMethods
-from data_consistency import Consistency
+from data_consistency import Consistency, AlertMessages
 # from waitress import serve
 
 
@@ -111,31 +111,27 @@ def add_tracks():
 def create_list():
     if request.method == 'GET': 
         if estado_usuario():
-            return render_template("create_list.html", state=estado_usuario(),alert=None, nickname=session['nickname'])   
+            return render_template("create_list.html", state=estado_usuario(),alerts=[], nickname=session['nickname'])   
     if request.method == 'POST':
         if estado_usuario():
-            alert = [False, False, False]
+            
             name = request.form['name']
             description = request.form['description']
-            id_user = session['id']  
-            consistencia = Consistency.agregar_lista(name, description)
-            id_lista = consultar_lista(id_user, name)
-            if (consistencia == None):
-                # * Si los datos son consistentes, agrega la lista a la base de datos
-                if  (id_lista is None):
-                    # ? Si la lista no existe
-                    alert[0] = True
-                    id_lista = agregar_lista(id_user, name, description)
-                    File(str(id_lista)).fcreate(session['id'], name, session['email'], session['nickname'], description)
-                    return render_template("create_list.html", state=estado_usuario(), alert=alert, nickname=session['nickname'], name_list=name, consistencia=consistencia)
-                else:
-                    # ? Si la lista existe
-                    alert[2] = True
-                    return render_template("create_list.html", state=estado_usuario(), alert=alert, nickname=session['nickname'], name_list=name, consistencia=consistencia) 
-            else:
-                # ? Si los datos no son consistentes:
-                alert[1] = True
-                return render_template("create_list.html", state=estado_usuario(), alert=alert, nickname=session['nickname'], name_list=name, consistencia=consistencia, name=name, description=description)     
+            
+            id_lista = consultar_lista( session['id'], name) 
+            
+            alerts = AlertMessages()._view_list( name, description, id_lista )
+            
+            if ( id_lista is None ):
+                id_lista = agregar_lista( session['id'], name, description )
+                File( str( id_lista ) ).fcreate( session['id'], 
+                                                name, 
+                                                session['email'], 
+                                                session['nickname'], 
+                                                description )
+            
+            return render_template( "create_list.html", state=estado_usuario(), alerts=alerts, nickname=session['nickname'], name_list=name, name=name, description=description )
+            
   
 @app.route("/edit_list", methods=['POST', 'GET'])  
 def edit_list():
@@ -152,6 +148,27 @@ def edit_list():
             return render_template("edit_list.html", state=True, nickname=session['nickname'], data=data, info=info)
 
 
+@app.route("/edit_profile", methods=['GET', 'POST'])
+def edit_profile():
+    if estado_usuario():
+        if request.method == 'GET':
+            
+            data_user = obtener_usuario( int(session['id']) )
+            
+            print(data_user)
+            
+            return render_template("edit_profile.html", state=True, nickname=session['nickname'], data=data_user[0])
+        elif request.method == 'POST':            
+            data_user = dict( firs_name=request.form['first_name'], last_name=request.form['last_name'], user_name=request.form['user_name'], role=request.form['role'] )
+            
+            # actualiza db
+            actualizar_usuario( session['id'], data_user['firs_name'], data_user['last_name'], data_user['user_name'], data_user['role'] )
+           
+            
+            
+            return redirect( url_for("edit_profile") )
+
+
 @app.route("/save_list", methods=['POST'])  
 def save_list():
     if estado_usuario():
@@ -159,9 +176,8 @@ def save_list():
             name = request.form['list_name']
             description = request.form['description']
             privacy = request.form.get('btnradio')
-            
-            print(f" >>> {privacy=}")
-            print( f"{name=} - {description=}" )
+            modificar_privacy_en_lista( session['list_target'], privacy )
+
             lyst = DataMethods.kwargsLists_to_dictionaryList( artist=request.form.getlist('artist'),  
                                                     album=request.form.getlist('album'),
                                                     track=request.form.getlist('track'),
@@ -176,10 +192,8 @@ def view_lists():
     if estado_usuario():
         if request.method == 'GET':
             data = []
-            lysts_db = obtener_listas(session['id'])
-            for lyst in lysts_db:
-                item = File(str(lyst[0])).data.get('list')                    
-                data.append(item)
+            lysts_db = obtener_listas( session['id'] )
+            data = File.get_lists( lysts_db )
             return render_template("view_lists.html", state=True, nickname=session['nickname'], data=data)
         
 @app.route("/delete_list", methods=['POST'])

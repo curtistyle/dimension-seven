@@ -30,6 +30,15 @@ def consultar_usuario(email : str, password : str):
     else:
         return False
 
+def obtener_usuario( id_user : int ):
+    db = conectar_db()
+    cur = db.cursor()
+    query = "SELECT * FROM users WHERE id = %s"
+    values = (id_user, )
+    cur.execute(query, values)
+    user = cur.fetchall()
+    cur.close()
+    return user
 
 def agregar_usuario(nickname, name, surname, email, password):
     db = conectar_db()
@@ -83,7 +92,7 @@ def agregar_lista(id_user : int, name : str, desciption : str):
     cur.execute(query, values)
     nuevo_id = cur.lastrowid
     db.commit()
-    cur.close()
+    
     return nuevo_id
     
 def eliminar_lista( id_list : int ):
@@ -92,3 +101,24 @@ def eliminar_lista( id_list : int ):
 
     cur.execute("DELETE FROM lists WHERE id=%s", (id_list, ))
     db.commit()
+    
+    
+def modificar_privacy_en_lista( id_list : int, despues : str ):
+    db = conectar_db()
+    cur = db.cursor()
+    query = f"UPDATE lists SET privacy = '{despues}' WHERE id = '{id_list}'"
+    cur.execute( query )
+    db.commit()
+    print( cur.rowcount, " record(s) affected")
+    
+
+def actualizar_usuario( id_user : int, first_name : str, last_name : str, nickname : str , role : str ):
+    db = conectar_db()
+    cur = db.cursor()
+    query = "UPDATE users SET name = %s, surname = %s, nick_name = %s, role = %s WHERE id = %s"
+    values = ( first_name, last_name, nickname, role, id_user )
+    print( f"{query}" )
+    cur.execute( query, values )
+    db.commit()
+    
+    print( cur.rowcount, " record(s) affected")
