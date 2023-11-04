@@ -15,7 +15,7 @@ class DataMethods():
         print("ITEMS: ", items)
         for item in items:
             words = item.split('¯')
-            base = { 'artist': words[0], 'album': words[1], 'track' : words[2], 'time' : words[3] }
+            base = { 'artist': words[0], 'album': words[1], 'track' : words[2], 'time' : words[3], 'genres' : words[4] }
             lyst.append(base)
         return lyst  
 
@@ -41,6 +41,15 @@ class DataMethods():
                 new_dyct[ keys[ row ] ] = matrix[ row ][ col ]
             lyst.append( new_dyct )    
         return lyst
+    
+    @staticmethod
+    def recount( lyst : list ):
+        counter = 0
+        for item in lyst:
+            counter += 1
+            time = item['time']
+            new_time = DataMethods.time_accumulator( time, "00:00" )
+        return new_time, counter
     
     def bubbleSortWithTweak(lyst, key):
         n = len(lyst)
@@ -77,12 +86,58 @@ class DataMethods():
             if lyst[index][key] > target:
                 lyst[index][key] -= 1
     
+    
+    def time_to_dict( time : str ):
+        dyct = { 'hora' : 0, 'minuto' : None, 'segundo' : None }
+        if( len( time.split(":") ) == 2 ):
+            dyct['minuto'], dyct['segundo'] = map( int, time.split(":") )
+        elif( len( time.split(":") ) == 3 ):
+            dyct['hora'], dyct['minuto'], dyct['segundo'] = map( int, time.split(":") )
+        return dyct
+
+    def dict_to_time( time : dict ):
+        segundo = str( time['segundo'] ) 
+        minuto = str( time['minuto'] )
+        hora = str( time['hora'] )
+        if ( len( segundo ) == 1 ): 
+            segundo = "0" + segundo
+        if ( len( minuto ) == 1 ):
+            minuto = "0" + minuto
+        if ( len( hora ) == 1 ):
+            hora = "0" + hora    
+        return f"{hora}:{minuto}:{segundo}"
+
+    @staticmethod
+    def time_accumulator( time : str, total_time : str ):
+        time = DataMethods.time_to_dict( time )
+        total_time = DataMethods.time_to_dict( total_time )
+        segundo = total_time['segundo'] + time['segundo']
+        if segundo > 60:
+            total_time['segundo'] = segundo % 60
+            resto = segundo // 60
+        else:
+            total_time['segundo'] = segundo
+            resto = 0
+            
+        minuto = total_time['minuto'] + time['minuto']
+        if minuto > 60:
+            total_time['minuto'] = (resto + minuto) % 60
+            resto = minuto // 60
+        else:
+            total_time['minuto'] = minuto + resto
+            resto = 0
+        
+        total_time['hora'] = total_time['hora'] + time['hora'] + resto
+        
+        return DataMethods.dict_to_time( total_time )
+    
+    
 
 class File():
     
     type_file = {
         "user" : { 'id' : None,  "email": None, "nickname": None},
-        "list" : { 'id' : None, 'name' : None, 'amount' : 0, 'total_time' : None, 'privacy' : "danger", "description" : None },
+        "list" : { 'id' : None, 'name' : None, 'amount' : 0, 'total_time' : "00:00", 'privacy' : "danger", "description" : None, 'genres' : set },
         "data" : []
     }
     
@@ -227,27 +282,32 @@ class File():
         
     def data_insert(self, lyst : list, error=[]):       
         self.fread()
+        total_time = self.__data.get('list')['total_time']
         for item in range(0, len(lyst)):
-            # ! ordena la lista por nombre de cancion  
+            
             DataMethods.bubbleSortWithTweak(self.__data.get('data'), 'track')
-            print(f"lyst[item]['track']={lyst}")
+            print( f"lyst[item]['track']={lyst}" )
             
             if DataMethods.binarySearch(lyst[item]['track'], "track", self.__data.get('data')) is None:   
                 amount = self.__data.get('list')['amount']
                 amount += 1
                 
-                total_time = self.get_data('list')['total_time']
+                # ! EDITANDO  
                 
+                genres : set
+                genres = lyst[item]['genres']
+                self.__data.get('list')['genres']
+                
+                total_time = DataMethods.time_accumulator( lyst[item]['time'], total_time )
+
                 lyst[item].update({'order' : amount})
                 self.__data.get('list')['amount'] = amount
                 self.__data.get('data').append(lyst[item])
             else: 
                 error.append(lyst[item])
+        self.__data.get('list')['total_time'] = total_time
         self.fwrite()
-        if error:
-            return False
-        else:
-            return True
+        return total_time, amount
 
     def data_pop(self, **kwargs):
         data = dict()
@@ -301,11 +361,13 @@ class mySpotify():
                 artist_id = artist_item["id"]
                 
                 # * Artist()
-                artist = Artist(artist_item["name"])
+                artist = Artist(artist_item["name"], artist_item["genres"])
                 
                 # Lista de Album()
                 list_albums = []
                 pos = 1
+                
+                print( artist_item, end="\n\n" )
                 
                 # Obtener los álbumes del artista
                 sp_albums = self.__sp.artist_albums(artist_id, album_type="album")
@@ -329,7 +391,7 @@ class mySpotify():
                         
                         track_list.append({'title':track.title, 'time': track.time.fminseg()})
                         
-                    list_albums.append({'title': album.title,'year':album.year, 'tracks':track_list,'property':acordion_property,'img':album.img})
+                    list_albums.append({'title': album.title,'year':album.year, 'tracks':track_list,'property':acordion_property,'img':album.img,'genres':artist.genres})
                     pos += 1
             else:
                 return None

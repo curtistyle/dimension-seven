@@ -74,10 +74,10 @@
                 <!-- track -->
                 <td class="align-middle"><input type="hidden" name="track" value="{{item['track']}}">{{item['track']}}</td>
                 <!-- time -->
-                <td><input type="hidden" name="time" value="{{item['time']}}">{{item['time']}}</td>
-                <td>
-                    <img src="img/garbage_collector.png" width="25px" height="25px">
-                    <img src="img/info.png" width="25px" height="25px">
+                <td class="align-middle"><input type="hidden" name="time" value="{{item['time']}}">{{item['time']}}</td>
+                <td class="align-middle">
+                    <img class="mx-2" src="{{url_for('static', filename='img/info.png')}}" width="25px" height="25px">
+                    <a type="button" onclick="pop(this);"><img class="mx-2" src="{{url_for('static', filename='img/garbage_collector.png')}}" width="25px" height="25px"></a>
                 </td>
             </tr>
             {% endfor %}

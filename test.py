@@ -283,15 +283,50 @@ time = ['02:23', '01:59', '02:43', '02:07', '03:01']
 
 # actualizar_usuario( 2, 'Seba', 'Maldona', 'Curtis', 'guitar' )
 
-total_time = "0"
-time = ["01:51", "02:22", "03:45"]
 
 
-def time_to_dict():
-    pass
+def time_to_dict( time : str ):
+    dyct = { 'hora' : 0, 'minuto' : None, 'segundo' : None }
+    if( len( time.split(":") ) == 2 ):
+        dyct['minuto'], dyct['segundo'] = map( int, time.split(":") )
+    elif( len( tiempo.split(":") ) == 3 ):
+        dyct['hora'], dyct['minuto'], dyct['segundo'] = map( int, time.split(":") )
+    return dyct
+
+def dict_to_time( time : dict ):
+    segundo = str( time['segundo'] ) 
+    minuto = str( time['minuto'] )
+    hora = str( time['hora'] )
+    if ( len( segundo ) == 1 ): 
+        segundo = "0" + segundo
+    if ( len( minuto ) == 1 ):
+        minuto = "0" + minuto
+    if ( len( hora ) == 1 ):
+        hora = "0" + hora    
+    return f"{hora}:{minuto}:{segundo}"
 
 def time_accumulator( time : str, total_time : str ):
-    pass
+    time = time_to_dict( time )
+    total_time = time_to_dict( total_time )
+    segundo = total_time['segundo'] + time['segundo']
+    if segundo > 60:
+        total_time['segundo'] = segundo % 60
+        resto = segundo // 60
+    else:
+        total_time['segundo'] = segundo
+        resto = 0
+        
+    minuto = total_time['minuto'] + time['minuto']
+    if minuto > 60:
+        total_time['minuto'] = (resto + minuto) % 60
+        resto = minuto // 60
+    else:
+        total_time['minuto'] = minuto + resto
+        resto = 0
+    
+    total_time['hora'] = total_time['hora'] + time['hora'] + resto
+    
+    return dict_to_time( total_time )
 
 def m( asd ):
     ...
@@ -314,3 +349,69 @@ minutos = int(minutos)
 segundos = int(segundos)
 
 print( f"{horas=}, {minutos=}, {segundos=}" )
+
+print( time_to_dict( "01:22" ) )
+
+time = [
+    {
+      "artist": "Millencolin",
+      "album": "Kingwood",
+      "track": "Shut You Out",
+      "order": 1,
+      "time": "00:00"
+    },
+    {
+      "artist": "Megadeth",
+      "album": "Countdown To Extinction",
+      "track": "Skin O' My Teeth",
+      "order": 2,
+      "time": "00:00"
+    },
+    {
+      "artist": "Megadeth",
+      "album": "Peace Sells... But Who's Buying?",
+      "track": "Peace Sells",
+      "order": 3,
+      "time": "00:00"
+    },
+    {
+      "artist": "Metallica",
+      "album": "Garage Inc. DISC II",
+      "track": "Am I Evil?",
+      "order": 4,
+      "time": "00:00"
+    }
+  ]
+
+total_time = "00:00"
+# time = ["01:51", "02:22", "03:45"]
+
+
+print( time_accumulator( "01:51", "03:45" ) )
+
+for item in time:
+    total_time = time_accumulator( item['time'], total_time )
+    
+print( f"{total_time=}" )
+
+nueva_lista = []
+
+genres = [{ "gen" : None, "count" : None }]
+
+lista1 = ["rojo", "rojo", "verde", "verde", "amarillo"]
+lista2 = ["rojo", "rojo", "verde", "amarillo", "amarillo"]
+
+nueva_lista.extend( lista1 )
+nueva_lista.extend( lista2 )
+
+
+print( nueva_lista )
+
+set_lista = set(nueva_lista)
+
+for item in set_lista:
+    print( f"{item} - {nueva_lista.count( item )}" )
+    genres.append({ "gen" : item, "count" : nueva_lista.count( item ) })
+
+# for item in range(0, len(nueva_lista)):
+#     print(nueva_lista[item])

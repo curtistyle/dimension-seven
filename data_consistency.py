@@ -49,7 +49,7 @@ class AlertMessages:
     #         alert['style_box'] = "danger"
     #     return alert
         
-    def _view_list( name_list : str, description : str, id_list : int ):
+    def view_list( name_list : str, description : str, id_list : int ):
         error = { "message" : None, "style_box" : None, "id_lista" : None }
         errors = []
         if ( len( name_list ) > 50 ):

@@ -1,1 +1,48 @@
-{"user": {"id": 1, "nickname": "Curtis", "email": "curtis@example.com"}, "list": {"id": 8, "name": "Lista 1 - Green day", "amount": 5, "privacy": "private", "description": "This is an incomplete list of songs released by American punk rock group the Green day in alphabetical order."}, "data": [{"artist": "Green Day", "album": "Dookie", "track": "She", "order": 1, "time": ""}, {"artist": "The Offspring", "album": "Americana", "track": "Have You Ever", "order": 2, "time": ""}, {"artist": "Sum 41", "album": "All Killer No Filler", "track": "Motivation", "order": 3, "time": ""}, {"artist": "Metallica", "album": "Garage Inc. DISC II", "track": "Am I Evil?", "order": 4, "time": ""}, {"artist": "Blink 182", "album": "Greates Hist", "track": "First Date", "order": 5, "time": ""}]}
+{
+  "user": { "id": 1, "nickname": "Curtis", "email": "curtis@example.com" },
+  "list": {
+    "id": 8,
+    "name": "Lista 1 - Green day",
+    "amount": 5,
+    "total_time": "00:00",
+    "privacy": "private",
+    "description": "This is an incomplete list of songs released by American punk rock group the Green day in alphabetical order."
+  },
+  "data": [
+    {
+      "artist": "Green Day",
+      "album": "Dookie",
+      "track": "She",
+      "order": 1,
+      "time": "02:14"
+    },
+    {
+      "artist": "The Offspring",
+      "album": "Americana",
+      "track": "Have You Ever",
+      "order": 2,
+      "time": "03:15"
+    },
+    {
+      "artist": "Sum 41",
+      "album": "All Killer No Filler",
+      "track": "Motivation",
+      "order": 3,
+      "time": "02:50"
+    },
+    {
+      "artist": "Metallica",
+      "album": "Garage Inc. DISC II",
+      "track": "Am I Evil?",
+      "order": 4,
+      "time": "07:50"
+    },
+    {
+      "artist": "Blink 182",
+      "album": "Greates Hist",
+      "track": "First Date",
+      "order": 5,
+      "time": "02:51"
+    }
+  ]
+}

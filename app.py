@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, session, redirect, url_for
-from database import consultar_usuario, agregar_usuario, agregar_lista, consultar_lista, obtener_listas, obtener_lista, eliminar_lista, modificar_privacy_en_lista, obtener_usuario, actualizar_usuario
+from database import consultar_usuario, agregar_usuario, agregar_lista, consultar_lista, obtener_listas, obtener_lista, eliminar_lista, obtener_usuario, actualizar_usuario, actualizar_lista
 from config import SECRET_KEY
 from interface import mySpotify, File, DataMethods
 from data_consistency import Consistency, AlertMessages
@@ -99,9 +99,16 @@ def add_tracks():
             lyst_target = request.form.get('select')
             id_list = consultar_lista(session['id'], lyst_target)
             if id_list:
-                tracks = DataMethods.format_list(tracks)
+                # ! editando
+                tracks = DataMethods.format_list( tracks )
                 print("TRACKS", tracks)
-                File(str(id_list)).data_insert(tracks,error)
+                
+                total_time, amount = File(str(id_list)).data_insert(tracks,error)
+                
+                print( f"{total_time} - {amount}" )
+                
+                actualizar_lista( id_list, amount, total_time )
+                
                 return redirect(url_for("index"))
             else:
                 return redirect(url_for("index"))
@@ -120,7 +127,7 @@ def create_list():
             
             id_lista = consultar_lista( session['id'], name) 
             
-            alerts = AlertMessages()._view_list( name, description, id_lista )
+            alerts = AlertMessages.view_list( name, description, id_lista )
             
             if ( id_lista is None ):
                 id_lista = agregar_lista( session['id'], name, description )
@@ -146,6 +153,7 @@ def edit_list():
             data = File(str(session['list_target'])).get_data() 
             info = File(str(session['list_target'])).get_info()
             return render_template("edit_list.html", state=True, nickname=session['nickname'], data=data, info=info)
+
 
 
 @app.route("/edit_profile", methods=['GET', 'POST'])
@@ -174,14 +182,18 @@ def save_list():
             name = request.form['list_name']
             description = request.form['description']
             privacy = request.form.get('btnradio')
-            modificar_privacy_en_lista( session['list_target'], privacy )
 
             lyst = DataMethods.kwargsLists_to_dictionaryList( artist=request.form.getlist('artist'),  
                                                     album=request.form.getlist('album'),
                                                     track=request.form.getlist('track'),
                                                     order=DataMethods.listString_to_listInt(request.form.getlist('order')), 
                                                     time=request.form.getlist('time') )
-            File(str(session['list_target'])).overwrite( lyst, name=name, description=description, privacy=privacy )
+            
+            total_time, amount = DataMethods.recount( lyst )
+            
+            actualizar_lista( session['list_target'], amount, total_time, privacy )
+            
+            File(str(session['list_target'])).overwrite( lyst, name=name, description=description, privacy=privacy, total_time=total_time, amount=amount )
             # return render_template("edit_list.html", state=True, nickname=session['nickname'], lyst=lyst)  
             return redirect( url_for("edit_list") )
             

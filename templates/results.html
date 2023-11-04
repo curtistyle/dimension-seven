@@ -34,11 +34,11 @@
                                     {% for track in album['tracks'] %}
                                     <tr class="border-secondary">
                                         <th scope="row">{{loop.index}}</th>
-                                        <td>{{ track['title'] }}</td>
-                                        <td>{{ track['time'] }}</td>
+                                        <td>{{track['title']}}</td>
+                                        <td>{{track['time']}}</td>
                                         <td>
                                             <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" name="lista" value="{{ artist }} ¯ {{ album['title'] }} ¯ {{track['title']}} ¯ {{track['time']}}" id="flexCheckDefault">
+                                                <input class="form-check-input" type="checkbox" name="lista" value="{{artist}}¯{{album['title']}}¯{{track['title']}}¯{{track['time']}}¯{{track['genres']}}" id="flexCheckDefault">
                                             </div>
                                         </td>
                                     </tr>

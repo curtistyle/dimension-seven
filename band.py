@@ -1,7 +1,8 @@
 class Artist():
     """ Constructor """
-    def __init__(self, name=''):
+    def __init__(self, name='', genres=[]):
         self.__name : str = name
+        self.__genres : list = genres
     
     def __repr__(self):
         return (
@@ -18,6 +19,14 @@ class Artist():
     @name.setter
     def name(self, value):
         self.__name = value
+    
+    @property
+    def genres(self):
+        return self.__genres
+    
+    @genres.setter
+    def genres(self, value):
+        self.__genres = value
         
 class Album():
     """ Constructor: se llama cuando se crea una nueva instancia de la clase. """

@@ -1,5 +1,17 @@
 // var radio_btn = document.getElementById('btnradio1')
 
+function pop(element){
+    var table = document.getElementById("table")
+    console.log()
+    index=element.parentNode.parentNode.cells[0].innerText
+    element.parentNode.parentNode.remove()
+    console.log("index: " + index)
+    for (var i = index; i < table.rows.length; i++){
+        table.rows[i].cells[0].innerHTML = "<input type='hidden' name='order' value="+ i +">" + i
+        console.log( table.rows[i] )
+    }
+}
+
 
 // ? view_list.html modal 
 function deletelist(value){

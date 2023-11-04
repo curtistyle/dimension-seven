@@ -4,6 +4,7 @@
     "id": "9",
     "name": "Lista 2 - The Offspring",
     "amount": 4,
+    "total_time": "00:00",
     "privacy": "public",
     "description": "This is an incomplete list of songs released by American punk rock group the Offspring in alphabetical order."
   },
@@ -13,28 +14,28 @@
       "album": "Kingwood",
       "track": "Shut You Out",
       "order": 1,
-      "time": ""
+      "time": "02:30"
     },
     {
       "artist": "Megadeth",
       "album": "Countdown To Extinction",
       "track": "Skin O' My Teeth",
       "order": 2,
-      "time": ""
+      "time": "01:40"
     },
     {
       "artist": "Megadeth",
       "album": "Peace Sells... But Who's Buying?",
       "track": "Peace Sells",
       "order": 3,
-      "time": ""
+      "time": "05:22"
     },
     {
       "artist": "Metallica",
       "album": "Garage Inc. DISC II",
       "track": "Am I Evil?",
       "order": 4,
-      "time": ""
+      "time": "03:10"
     }
   ]
 }

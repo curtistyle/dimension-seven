@@ -87,8 +87,8 @@ def obtener_lista(id_user : int, id_lista):
 def agregar_lista(id_user : int, name : str, desciption : str):
     db = conectar_db()
     cur = db.cursor()
-    query = "INSERT INTO lists (id_user, name, description) VALUES (%s, %s, %s)"
-    values = (id_user, name, desciption)
+    query = "INSERT INTO lists (id_user, name, description, total_time) VALUES (%s, %s, %s, %s)"
+    values = (id_user, name, desciption, "00:00:00")
     cur.execute(query, values)
     nuevo_id = cur.lastrowid
     db.commit()
@@ -103,13 +103,7 @@ def eliminar_lista( id_list : int ):
     db.commit()
     
     
-def modificar_privacy_en_lista( id_list : int, despues : str ):
-    db = conectar_db()
-    cur = db.cursor()
-    query = f"UPDATE lists SET privacy = '{despues}' WHERE id = '{id_list}'"
-    cur.execute( query )
-    db.commit()
-    print( cur.rowcount, " record(s) affected")
+
     
 
 def actualizar_usuario( id_user : int, first_name : str, last_name : str, nickname : str , role : str ):
@@ -122,3 +116,14 @@ def actualizar_usuario( id_user : int, first_name : str, last_name : str, nickna
     db.commit()
     
     print( cur.rowcount, " record(s) affected")
+    
+def actualizar_lista( id_list : int, amount : int, total_time : str, privacy : str ):
+    db = conectar_db()
+    cur = db.cursor()
+    query = "UPDATE lists SET amount = %s, total_time = %s, privacy = %s WHERE id = %s"
+    values = ( amount, total_time, privacy, id_list )
+    cur.execute( query, values )
+    db.commit()
+    
+    print( cur.rowcount, " record(s) affected" )
+    
