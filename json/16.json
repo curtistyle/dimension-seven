@@ -1,0 +1,59 @@
+{
+  "user": { "id": 1, "email": "curtis@example.com", "nickname": "Curtis" },
+  "list": {
+    "id": "16",
+    "name": "test",
+    "amount": 2,
+    "total_time": "00:06:32",
+    "privacy": "public",
+    "description": "asdasd",
+    "genres": [
+      ["post-grunge", 1],
+      ["alternative metal", 2],
+      ["skate punk", 1],
+      ["rock", 2],
+      ["socal pop punk", 1],
+      ["punk", 1],
+      ["groove metal", 1],
+      ["texas metal", 1],
+      ["hard rock", 1],
+      ["metal", 1],
+      ["nu metal", 1],
+      ["old school thrash", 1]
+    ]
+  },
+  "data": [
+    {
+      "artist": "The Offspring",
+      "album": "The Offspring",
+      "track": "Jennifer Lost The War",
+      "time": "02:35",
+      "genres": [
+        "alternative metal",
+        "post-grunge",
+        "punk",
+        "rock",
+        "skate punk",
+        "socal pop punk"
+      ],
+      "order": 1
+    },
+    {
+      "artist": "Pantera",
+      "album": "Vulgar Display of Power (Expanded)",
+      "track": "A New Level - 2012 Remaster",
+      "time": "03:57",
+      "genres": [
+        "alternative metal",
+        "groove metal",
+        "hard rock",
+        "metal",
+        "nu metal",
+        "old school thrash",
+        "rock",
+        "texas metal"
+      ],
+      "order": 2
+    }
+  ]
+}

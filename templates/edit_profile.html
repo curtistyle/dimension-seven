@@ -2,7 +2,7 @@
 
 {% block edit_profile %}
 <div class="card p-3">
-    <form class="row g-3" method="POST">
+    <form class="row g-3" method="POST" enctype="multipart/form-data">
         <!-- FIRST_NAME -->
         <div class="col-md-4">
             <label for="validationDefault01" class="form-label">First name</label>
@@ -41,6 +41,11 @@
                 <option value="SeguidoraDelRB0">SeguidoraDelRB0</option>
 
             </select>
+        </div>
+        <!-- UPLOAD FILE -->
+        <div class="col-md-3">
+            <label for="formFile" class="form-label">profile image</label>
+            <input class="form-control" type="file" id="formFile" name="uploadfile" accept=".png, .jpg">
         </div>
         <div class="col-12">
             <button class="btn btn-primary" type="submit" >Save changes</button>

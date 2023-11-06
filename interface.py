@@ -1,6 +1,8 @@
 from spotipy import Spotify, SpotifyClientCredentials
 from band import Album, Artist, Track
 from os import rename
+from werkzeug.utils import secure_filename
+import os
 import json 
 
 
@@ -9,13 +11,13 @@ class DataMethods():
     def get_pos():...
     
     @staticmethod
-    def format_list(items : list):
+    def format_list(items : list, genres):
         """Retorna una `lista` con los items formateados. Donde `item` contiene `artista`, `album`, `track`. `list_select` la lista seleccionada que hace referencia al item."""
         lyst = list()
         print("ITEMS: ", items)
         for item in items:
             words = item.split('¯')
-            base = { 'artist': words[0], 'album': words[1], 'track' : words[2], 'time' : words[3], 'genres' : words[4] }
+            base = { 'artist': words[0], 'album': words[1], 'track' : words[2], 'time' : words[3], 'genres': genres }
             lyst.append(base)
         return lyst  
 
@@ -41,6 +43,25 @@ class DataMethods():
                 new_dyct[ keys[ row ] ] = matrix[ row ][ col ]
             lyst.append( new_dyct )    
         return lyst
+    
+    @staticmethod
+    def countGenres( lyst : list, genres : list ):
+        if (lyst.count("permanent wave")) > 0:
+            lyst.remove("permanent wave")
+        set_lyst = set( lyst )
+        new_lyst = []
+        for item in set_lyst:
+            new_lyst.append([item, lyst.count( item )])
+        if genres:
+            for a in new_lyst:
+                for b in genres:
+                    if (a[0] == b[0]):
+                        b[1] += a[1]
+                        new_lyst.remove(a)
+            genres.extend( new_lyst )
+        else:
+            genres.extend( new_lyst )
+        return genres
     
     @staticmethod
     def recount( lyst : list ):
@@ -131,13 +152,32 @@ class DataMethods():
         
         return DataMethods.dict_to_time( total_time )
     
-    
 
+class FileUpload():
+    ALLOWED_EXTENSIONS = set(['png', 'jpg'])
+    def __init__(self, file) -> bool:
+        self.upload = file
+        self.filename = secure_filename(file.filename)
+        self.name = self.filename.split('.')[0]
+        self.extension = self.filename.split('.')[1]
+        if self.extension in FileUpload.ALLOWED_EXTENSIONS:
+            return True
+        else:
+            return False
+    
+    def toString(self):
+        print( f"file={self.upload}\n"
+               f"name={self.name}\n"
+               f"extension={self.extension}\n"
+              )
+      
 class File():
+    
+    
     
     type_file = {
         "user" : { 'id' : None,  "email": None, "nickname": None},
-        "list" : { 'id' : None, 'name' : None, 'amount' : 0, 'total_time' : "00:00", 'privacy' : "danger", "description" : None, 'genres' : set },
+        "list" : { 'id' : None, 'name' : None, 'amount' : 0, 'total_time' : "00:00", 'privacy' : "danger", "description" : None, 'genres' : { 'gen' : [] } },
         "data" : []
     }
     
@@ -244,6 +284,32 @@ class File():
             if key in self.__data['list'].keys():
                 self.__data['list'][key] = item
         self.fwrite()
+        
+    def delete(self, data : list, **info ):
+        self.fread()
+        
+        for key, item in info.items():
+            if key in self.__data['list'].keys():
+                self.__data['list'][key] = item
+        DataMethods.bubbleSortWithTweak( self.__data['data'], 'track' ) # ? track list file
+        
+        new_list = []
+        for item in data:
+            pos = DataMethods.binarySearch( item['track'], 'track', self.__data['data'] )
+            if pos is not None:
+                new_list.append( self.__data['data'][pos] )
+                # self.__data['data'].pop(pos)
+        
+        new_genre = [] 
+        for item in new_list:
+            new_genre = DataMethods.countGenres( item['genres'], new_genre )    
+        
+        print( f"{new_genre=}")
+        print( f"{new_list=}")
+        self.__data['data'] = new_list
+        self.__data['list']['genres'] = new_genre
+        self.fwrite()
+        return new_genre
     
     def rename_file(self, value):
         original_path = self.__path
@@ -277,12 +343,14 @@ class File():
     
     def inc_amount(self):
         amount = self.get_amount() + 1
-        print(amount)
         self.data.get("list")['amount'] = amount
         
-    def data_insert(self, lyst : list, error=[]):       
+    def data_insert(self, lyst : list, genre : list, error=[]):       
         self.fread()
         total_time = self.__data.get('list')['total_time']
+        old_gen = self.__data.get('list')['genres']
+        new_gen = DataMethods.countGenres( genre, old_gen )
+        self.__data.get('list')['genres'] = new_gen
         for item in range(0, len(lyst)):
             
             DataMethods.bubbleSortWithTweak(self.__data.get('data'), 'track')
@@ -294,9 +362,9 @@ class File():
                 
                 # ! EDITANDO  
                 
-                genres : set
-                genres = lyst[item]['genres']
-                self.__data.get('list')['genres']
+                # genres : set
+                # genres = lyst[item]['genres']
+                # self.__data.get('list')['genres']
                 
                 total_time = DataMethods.time_accumulator( lyst[item]['time'], total_time )
 
@@ -307,7 +375,7 @@ class File():
                 error.append(lyst[item])
         self.__data.get('list')['total_time'] = total_time
         self.fwrite()
-        return total_time, amount
+        return total_time, amount, {'gen':new_gen}
 
     def data_pop(self, **kwargs):
         data = dict()
@@ -340,6 +408,20 @@ class File():
             item = File( str( id_list[0] ) ).data.get( 'list' ) 
             lyst.append( item )
         return lyst
+    
+    @staticmethod
+    def fileupload( file, folder, id_user ):
+        ALLOWED_EXTENSIONS = set(['png', 'jpg'])
+        name = file.filename.split(".")[0]
+        extension = file.filename.split(".")[1]
+        file.filename = f"img_profile-{id_user}.{extension}"
+        filename = secure_filename(file.filename)
+        if extension in ALLOWED_EXTENSIONS:
+            file.save( os.path.join( folder, filename ) )
+            return filename, None
+        else:
+            return None, extension
+    
 class mySpotify():
     # credenciales de la aplicacion
     __client_id = "aad4ffcc488644c8ac36c765382751be"

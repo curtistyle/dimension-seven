@@ -1,6 +1,7 @@
 from mysql import connector
 from mysql.connector import Error
 import config
+import json
 
 def conectar_db():
     connection = None
@@ -73,6 +74,23 @@ def obtener_listas(id_user):
     else:
         return None
     
+
+def obtener_todo():
+    db = conectar_db()
+    cur = db.cursor()
+    cur.execute("SELECT * FROM users")
+    users = cur.fetchall()
+    result=[]
+    for user in users:
+        dyct_user = { 'user' : None, 'data' : None }
+        dyct_user['user'] = {'name':user[3], 'surname': user[4], 'nickname':[5], 'role':[6], 'img_patch': [8]}
+        cur.execute("SELECT * FROM lists WHERE id_user = %s", (user[0],))
+        lists = cur.fetchall()
+        dyct_user['data'] = lists
+        result.append( dyct_user.copy() )
+    cur.close()
+    return result
+    
 def obtener_lista(id_user : int, id_lista):
     db = conectar_db()
     cur = db.cursor()
@@ -87,12 +105,12 @@ def obtener_lista(id_user : int, id_lista):
 def agregar_lista(id_user : int, name : str, desciption : str):
     db = conectar_db()
     cur = db.cursor()
-    query = "INSERT INTO lists (id_user, name, description, total_time) VALUES (%s, %s, %s, %s)"
-    values = (id_user, name, desciption, "00:00:00")
+    query = "INSERT INTO lists (id_user, name, description, privacy, amount, total_time, genre) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+    values = (id_user, name, desciption, "private", 0, "00:00:00", json.dumps({}))
     cur.execute(query, values)
     nuevo_id = cur.lastrowid
     db.commit()
-    
+
     return nuevo_id
     
 def eliminar_lista( id_list : int ):
@@ -106,22 +124,27 @@ def eliminar_lista( id_list : int ):
 
     
 
-def actualizar_usuario( id_user : int, first_name : str, last_name : str, nickname : str , role : str ):
+def actualizar_usuario( id_user : int, first_name : str, last_name : str, nickname : str , role : str, path_img ):
     db = conectar_db()
     cur = db.cursor()
-    query = "UPDATE users SET name = %s, surname = %s, nick_name = %s, role = %s WHERE id = %s"
-    values = ( first_name, last_name, nickname, role, id_user )
+    if path_img == None:
+        query = "UPDATE users SET name = %s, surname = %s, nick_name = %s, role = %s WHERE id = %s"
+        values = ( first_name, last_name, nickname, role, id_user )
+    else:    
+        query = "UPDATE users SET name = %s, surname = %s, nick_name = %s, role = %s, profile_img = %s WHERE id = %s"
+        values = ( first_name, last_name, nickname, role, path_img, id_user )
     print( f"{query}" )
     cur.execute( query, values )
     db.commit()
     
     print( cur.rowcount, " record(s) affected")
     
-def actualizar_lista( id_list : int, amount : int, total_time : str, privacy : str ):
+def actualizar_lista( id_list : int, amount : int, total_time : str, privacy : str, genre : dict ):
     db = conectar_db()
     cur = db.cursor()
-    query = "UPDATE lists SET amount = %s, total_time = %s, privacy = %s WHERE id = %s"
-    values = ( amount, total_time, privacy, id_list )
+    genre=json.dumps(genre)
+    query = "UPDATE lists SET amount = %s, total_time = %s, privacy = %s, genre = %s WHERE id = %s"
+    values = ( amount, total_time, privacy, json.dumps(genre), id_list )
     cur.execute( query, values )
     db.commit()
     

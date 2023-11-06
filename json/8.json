@@ -6,7 +6,9 @@
     "amount": 5,
     "total_time": "00:00",
     "privacy": "private",
-    "description": "This is an incomplete list of songs released by American punk rock group the Green day in alphabetical order."
+    "description": "This is an incomplete list of songs released by American punk rock group the Green day in alphabetical order.",
+    "time": "00:00:00",
+    "genres" : { "gen" : [] } 
   },
   "data": [
     {

@@ -383,35 +383,69 @@ time = [
     }
   ]
 
-total_time = "00:00"
-# time = ["01:51", "02:22", "03:45"]
+# total_time = "00:00"
+# # time = ["01:51", "02:22", "03:45"]
 
 
-print( time_accumulator( "01:51", "03:45" ) )
+# print( time_accumulator( "01:51", "03:45" ) )
 
-for item in time:
-    total_time = time_accumulator( item['time'], total_time )
+# for item in time:
+#     total_time = time_accumulator( item['time'], total_time )
     
-print( f"{total_time=}" )
+# print( f"{total_time=}" )
 
-nueva_lista = []
+# nueva_lista = []
 
-genres = [{ "gen" : None, "count" : None }]
+# genres = [  ]
 
-lista1 = ["rojo", "rojo", "verde", "verde", "amarillo"]
-lista2 = ["rojo", "rojo", "verde", "amarillo", "amarillo"]
+# lista1 = ["rojo", "rojo", "verde", "verde", "amarillo"]
+# # lista2 = ["rojo", "rojo", "verde", "amarillo", "amarillo"]
 
-nueva_lista.extend( lista1 )
-nueva_lista.extend( lista2 )
+# nueva_lista.extend( lista1 )
+# # nueva_lista.extend( lista2 )
+
+# set_lista = set(nueva_lista)
+
+# for item in set_lista:
+#     print( f"{item} - {nueva_lista.count( item )}" )
+#     genres.append([item, nueva_lista.count( item )])
+
+# # for item in range(0, len(nueva_lista)):
+# #     print(nueva_lista[item])
+
+# print( genres )
 
 
-print( nueva_lista )
+# nueva_lista = []
 
-set_lista = set(nueva_lista)
 
-for item in set_lista:
-    print( f"{item} - {nueva_lista.count( item )}" )
-    genres.append({ "gen" : item, "count" : nueva_lista.count( item ) })
 
-# for item in range(0, len(nueva_lista)):
-#     print(nueva_lista[item])
+# lista3 = ["rojo", "verde", "amarillo", "rojo", "azul", "azul"]
+# genres = [['rojo', 4], ['amarillo', 3], ['verde', 3]]
+# genres = []
+
+
+
+# def countGenres( lyst : list, genres : list ):
+#     set_lyst = set( lyst )
+#     new_lyst = []
+#     for item in set_lyst:
+#         new_lyst.append([item, lyst.count( item )])
+#     if genres:
+#         for a in new_lyst:
+#             for b in genres:
+#                 if a[0] == b[0]:
+#                     b[1] += a[1]
+#                     new_lyst.remove(a)
+#         genres.extend( new_lyst )
+#     else:
+#         genres.extend( new_lyst )
+#     return genres
+# genres = countGenres( lista3, genres ).copy()
+# print(genres)
+
+lista = ["rojo", "verde", "azul", "permanent wave"]
+
+print( lista.count("") )
+
+

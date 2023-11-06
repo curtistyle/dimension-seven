@@ -6,7 +6,9 @@
     "amount": 17,
     "total_time": "01:12:51",
     "privacy": "private",
-    "description": "tupa tupa anselmo tupa tupa asd"
+    "description": "tupa tupa anselmo tupa tupa asd",
+    "time": "00:00:00",
+    "genres" : { "gen" : [] } 
   },
   "data": [
     {

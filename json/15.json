@@ -1,1 +1,139 @@
-{"user": {"id": 1, "email": "curtis@example.com", "nickname": "Curtis"}, "list": {"id": "15", "name": "nueva lista", "amount": 7, "total_time": "00:12:02", "privacy": "public", "description": "prueba", "time": "00:15:51"}, "data": [{"artist": "The Offspring ", "album": " Rise And Fall, Rage And Grace (15th Anniversary Deluxe Edition) ", "track": " Half-Truism ", "order": 1, "time": " 03:25"}, {"artist": "The Offspring ", "album": " Rise And Fall, Rage And Grace (15th Anniversary Deluxe Edition) ", "track": " Trust In You ", "order": 2, "time": " 03:09"}, {"artist": "The Offspring ", "album": " Americana ", "track": " Have You Ever ", "order": 3, "time": " 03:56"}, {"artist": "The Offspring ", "album": " Americana ", "track": " Staring At The Sun ", "order": 4, "time": " 02:13"}, {"artist": "The Offspring ", "album": " Americana ", "track": " Pretty Fly (For A White Guy) ", "order": 5, "time": " 03:08"}, {"artist": "Green Day", "album": "American Idiot (Deluxe)", "track": "American Idiot", "order": 6, "time": "02:54"}]}
+{
+  "user": { "id": 1, "email": "curtis@example.com", "nickname": "Curtis" },
+  "list": {
+    "id": "15",
+    "name": "nueva lista",
+    "amount": 15,
+    "total_time": "00:28:12",
+    "privacy": "public",
+    "description": "prueba",
+    "time": "00:15:51",
+    "genres": {
+      "gen": [
+        ["punk", 1],
+        ["rock", 2],
+        ["modern rock", 1],
+        ["grunge", 1],
+        ["alternative metal", 1],
+        ["post-grunge", 1],
+        ["alternative rock", 1],
+        ["nu metal", 1],
+        ["supergroup", 1],
+        ["hard rock", 1]
+      ]
+    }
+  },
+  "data": [
+    {
+      "artist": "Green Day",
+      "album": "American Idiot (Deluxe)",
+      "track": "American Idiot",
+      "order": 6,
+      "time": "02:54"
+    },
+    {
+      "artist": "Green Day",
+      "album": "Dookie",
+      "track": "Basket Case",
+      "time": "03:01",
+      "order": 14
+    },
+    {
+      "artist": "Green Day",
+      "album": "Dookie",
+      "track": "Chump",
+      "time": "02:54",
+      "order": 12
+    },
+    {
+      "artist": "The Offspring",
+      "album": "Ixnay On The Hombre",
+      "track": "Disclaimer",
+      "time": "00:44",
+      "genres": "",
+      "order": 8
+    },
+    {
+      "artist": "The Offspring",
+      "album": "Rise And Fall, Rage And Grace (15th Anniversary Deluxe Edition)",
+      "track": "Half-Truism",
+      "order": 1,
+      "time": " 03:25"
+    },
+    {
+      "artist": "The Offspring",
+      "album": "Americana",
+      "track": "Have You Ever",
+      "order": 3,
+      "time": " 03:56"
+    },
+    {
+      "artist": "The Offspring",
+      "album": "Conspiracy Of One",
+      "track": "Intro",
+      "time": "00:05",
+      "order": 11
+    },
+    {
+      "artist": "The Offspring",
+      "album": "The Offspring",
+      "track": "Jennifer Lost The War",
+      "time": "02:35",
+      "order": 10
+    },
+    {
+      "artist": "The Offspring",
+      "album": "Americana",
+      "track": "Pretty Fly (For A White Guy)",
+      "order": 5,
+      "time": " 03:08"
+    },
+    {
+      "artist": "Green Day",
+      "album": "Dookie",
+      "track": "She",
+      "time": "02:14",
+      "order": 13
+    },
+    {
+      "artist": "The Offspring ",
+      "album": "Americana",
+      "track": "Staring At The Sun",
+      "order": 4,
+      "time": " 02:13"
+    },
+    {
+      "artist": "The Offspring",
+      "album": "Smash",
+      "track": "Time to Relax",
+      "time": "00:25",
+      "genres": "",
+      "order": 9
+    },
+    {
+      "artist": "The Offspring",
+      "album": "Rise And Fall, Rage And Grace (15th Anniversary Deluxe Edition)",
+      "track": "Trust In You",
+      "order": 2,
+      "time": " 03:09"
+    },
+    {
+      "artist": "Audioslave",
+      "album": "Revelations",
+      "track": "Revelations",
+      "time": "04:12",
+      "genres": [
+        "alternative metal",
+        "alternative rock",
+        "grunge",
+        "hard rock",
+        "nu metal",
+        "permanent wave",
+        "post-grunge",
+        "rock",
+        "supergroup"
+      ],
+      "order": 15
+    }
+  ]
+}
