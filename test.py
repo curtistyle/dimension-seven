@@ -285,72 +285,72 @@ time = ['02:23', '01:59', '02:43', '02:07', '03:01']
 
 
 
-def time_to_dict( time : str ):
-    dyct = { 'hora' : 0, 'minuto' : None, 'segundo' : None }
-    if( len( time.split(":") ) == 2 ):
-        dyct['minuto'], dyct['segundo'] = map( int, time.split(":") )
-    elif( len( tiempo.split(":") ) == 3 ):
-        dyct['hora'], dyct['minuto'], dyct['segundo'] = map( int, time.split(":") )
-    return dyct
+# def time_to_dict( time : str ):
+#     dyct = { 'hora' : 0, 'minuto' : None, 'segundo' : None }
+#     if( len( time.split(":") ) == 2 ):
+#         dyct['minuto'], dyct['segundo'] = map( int, time.split(":") )
+#     elif( len( tiempo.split(":") ) == 3 ):
+#         dyct['hora'], dyct['minuto'], dyct['segundo'] = map( int, time.split(":") )
+#     return dyct
 
-def dict_to_time( time : dict ):
-    segundo = str( time['segundo'] ) 
-    minuto = str( time['minuto'] )
-    hora = str( time['hora'] )
-    if ( len( segundo ) == 1 ): 
-        segundo = "0" + segundo
-    if ( len( minuto ) == 1 ):
-        minuto = "0" + minuto
-    if ( len( hora ) == 1 ):
-        hora = "0" + hora    
-    return f"{hora}:{minuto}:{segundo}"
+# def dict_to_time( time : dict ):
+#     segundo = str( time['segundo'] ) 
+#     minuto = str( time['minuto'] )
+#     hora = str( time['hora'] )
+#     if ( len( segundo ) == 1 ): 
+#         segundo = "0" + segundo
+#     if ( len( minuto ) == 1 ):
+#         minuto = "0" + minuto
+#     if ( len( hora ) == 1 ):
+#         hora = "0" + hora    
+#     return f"{hora}:{minuto}:{segundo}"
 
-def time_accumulator( time : str, total_time : str ):
-    time = time_to_dict( time )
-    total_time = time_to_dict( total_time )
-    segundo = total_time['segundo'] + time['segundo']
-    if segundo > 60:
-        total_time['segundo'] = segundo % 60
-        resto = segundo // 60
-    else:
-        total_time['segundo'] = segundo
-        resto = 0
+# def time_accumulator( time : str, total_time : str ):
+#     time = time_to_dict( time )
+#     total_time = time_to_dict( total_time )
+#     segundo = total_time['segundo'] + time['segundo']
+#     if segundo > 60:
+#         total_time['segundo'] = segundo % 60
+#         resto = segundo // 60
+#     else:
+#         total_time['segundo'] = segundo
+#         resto = 0
         
-    minuto = total_time['minuto'] + time['minuto']
-    if minuto > 60:
-        total_time['minuto'] = (resto + minuto) % 60
-        resto = minuto // 60
-    else:
-        total_time['minuto'] = minuto + resto
-        resto = 0
+#     minuto = total_time['minuto'] + time['minuto']
+#     if minuto > 60:
+#         total_time['minuto'] = (resto + minuto) % 60
+#         resto = minuto // 60
+#     else:
+#         total_time['minuto'] = minuto + resto
+#         resto = 0
     
-    total_time['hora'] = total_time['hora'] + time['hora'] + resto
+#     total_time['hora'] = total_time['hora'] + time['hora'] + resto
     
-    return dict_to_time( total_time )
+#     return dict_to_time( total_time )
 
-def m( asd ):
-    ...
+# def m( asd ):
+#     ...
     
-tiempo = "01:02:22"
+# tiempo = "01:02:22"
 
-total = { "hora" : None, "minuto" : None, "segundo" : None }
+# total = { "hora" : None, "minuto" : None, "segundo" : None }
 
-horas, minutos, segundos = "","",""
+# horas, minutos, segundos = "","",""
 
-if( len( tiempo.split(":") ) == 2 ):
-    minutos, segundos = tiempo.split(":")
-elif( len( tiempo.split(":") ) == 3 ):
-    horas, minutos, segundos = tiempo.split(":")
+# if( len( tiempo.split(":") ) == 2 ):
+#     minutos, segundos = tiempo.split(":")
+# elif( len( tiempo.split(":") ) == 3 ):
+#     horas, minutos, segundos = tiempo.split(":")
 
-print( f"{horas=}, {minutos=}, {segundos=}" )
+# print( f"{horas=}, {minutos=}, {segundos=}" )
 
-horas = int(horas)
-minutos = int(minutos)
-segundos = int(segundos)
+# horas = int(horas)
+# minutos = int(minutos)
+# segundos = int(segundos)
 
-print( f"{horas=}, {minutos=}, {segundos=}" )
+# print( f"{horas=}, {minutos=}, {segundos=}" )
 
-print( time_to_dict( "01:22" ) )
+# print( time_to_dict( "01:22" ) )
 
 time = [
     {
@@ -444,8 +444,43 @@ time = [
 # genres = countGenres( lista3, genres ).copy()
 # print(genres)
 
-lista = ["rojo", "verde", "azul", "permanent wave"]
+# lista = ["rojo", "verde", "azul", "permanent wave"]
 
-print( lista.count("") )
+# print( lista.count("") )
 
+from interface import DataMethods
+
+genre=['modern rock', 'permanent wave', 'punk', 'rock']
+
+old_gen=[['post-grunge', 2], ['alternative metal', 2], ['skate punk', 1], ['rock', 3], ['socal pop punk', 2], ['punk', 1], ['groove metal', 1], ['texas metal', 1], ['hard rock', 
+1], ['metal', 1], ['nu metal', 1], ['old school thrash', 1], ['alternative metal', 1], ['punk', 1], ['skate punk', 1]]
+
+def countGenres( lyst : list, genres : list ):
+    if (lyst.count("permanent wave")) > 0:
+        lyst.remove("permanent wave")
+    set_lyst = set( lyst )
+    new_lyst = []
+    for item in set_lyst:
+        new_lyst.append([item, lyst.count( item )])
+        
+    aux = []
+    if genres:
+        for a in new_lyst:
+            index = 0
+            for b in genres:
+                if (a[0] == b[0]):
+                    b[1] += a[1]
+                else:
+                    index += 1
+            if index == len(genres):
+                aux.append(a)
+    else:
+        genres.extend( new_lyst )
+    if a:
+        genres.extend(aux)
+    return genres
+
+gen = countGenres(genre, old_gen)
+
+print(gen)
 

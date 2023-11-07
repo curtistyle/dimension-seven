@@ -1,0 +1,1 @@
+{"user": {"id": 3, "email": "anselmo@example.com", "nickname": "Anselmo"}, "list": {"id": "17", "name": "Lista 1", "amount": 1, "total_time": "00:01:40", "privacy": "private", "description": "asdasd", "genres": [["alternative metal", 1]]}, "data": [{"artist": "Minerva", "album": "Minerva", "track": "Elerrante", "time": "01:40", "genres": ["alternative metal"], "order": 1}]}

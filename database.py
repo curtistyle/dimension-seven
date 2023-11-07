@@ -41,6 +41,17 @@ def obtener_usuario( id_user : int ):
     cur.close()
     return user
 
+def obtener_id_usuario( nickname : str ):
+    db = conectar_db()
+    cur = db.cursor()
+    query = "SELECT id FROM users WHERE nick_name = %s"
+    values = (nickname, )
+    cur.execute( query, values )
+    user_id = cur.fetchone()
+    cur.close()
+    return user_id[0]
+
+
 def agregar_usuario(nickname, name, surname, email, password):
     db = conectar_db()
     cur = db.cursor()
@@ -49,6 +60,8 @@ def agregar_usuario(nickname, name, surname, email, password):
     cur.execute(query, values)
     db.commit()
     cur.close()   
+
+
 
 
 def consultar_lista(id_user : int, name : str):
@@ -62,6 +75,8 @@ def consultar_lista(id_user : int, name : str):
         return lista[0]
     else:
         return None
+    
+
     
 def obtener_listas(id_user):
     db = conectar_db()
@@ -83,7 +98,7 @@ def obtener_todo():
     result=[]
     for user in users:
         dyct_user = { 'user' : None, 'data' : None }
-        dyct_user['user'] = {'name':user[3], 'surname': user[4], 'nickname':[5], 'role':[6], 'img_patch': [8]}
+        dyct_user['user'] = {'name':user[3], 'surname': user[4], 'nickname':user[5], 'role':user[6], 'img_patch': user[8]}
         cur.execute("SELECT * FROM lists WHERE id_user = %s", (user[0],))
         lists = cur.fetchall()
         dyct_user['data'] = lists

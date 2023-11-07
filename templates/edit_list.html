@@ -21,7 +21,7 @@
                     <textarea name="description" class="form-control mx-2" id="exampleTextarea" rows="3">{{info['description']}}</textarea>
                 </div>
                 
-                <!-- button radio -->
+                <!-- button radio PRIVACY-->
                 <div class="form-group d-blocck ">
                     <div class="form-label">
                         <label class="mt-2 text-info" for="inputDefault">Privacy list</label>
@@ -44,9 +44,21 @@
                         {% endif %}
                     </div>
                 </div>
+            
+                <!-- Button trigger modal -->
+                <div class="form-group d-blocck ">
+                    <div class="">
+                        <label class="mt-2 text-info" for="inputDefault">Add manual track</label>
+                    </div>
+                    <button type="button" class="btn btn-success mx-2 px-3" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                        + ADD
+                    </button>
+                </div>
+            
             </div>
-
-
+            
+            
+            
       </div>
 
     <div class="card-body" data-bs-theme="light">
@@ -94,5 +106,66 @@
         </div>
     </div>
 </form>
-  <script></script>
+
+<!-- MODAL ADD TRACK -->
+<div class="modal modal-xl fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- FORM ADD TRACK MANUAL -->
+            <form action="/add_track_manual" method="POST" class="row g-3 needs-validation" novalidate>
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">ADD TRACK</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body d-inline-flex justify-content-between px-5">
+                    <div class="col-md-3">
+                        <label for="validationCustom01" class="form-label">Track name</label>
+                        <input type="text" class="form-control" id="validationCustom01" name="add_track">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="validationCustom02" class="form-label">Album name</label>
+                        <input type="text" class="form-control" id="validationCustom02" name="add_album">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="validationCustom03" class="form-label">Artist name</label>
+                        <input type="text" class="form-control" id="validationCustom03" name="add_artist">
+                    </div>
+                     
+                </div>
+                <div class="modal-body d-inline-flex justify-content-start px-5">
+                    <div class="col-md-1">
+                        <label for="validationCustom04" class="form-label">Time track</label>
+                        <input type="text" class="form-control" id="validationCustom04" name="add_time" value="00:00">
+                    </div> 
+                    
+
+                    <div class="col-md-3 mx-5">
+                        <label for="validationCustom04" class="form-label">State</label>
+                        <select name="add_genre" class="form-select" id="validationCustom04" required>
+                            <option  selected disabled value="">Choose...</option>
+                            {% for genre in genres %}
+                            <option value="{{genre}}" >{{genre}}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="invalid-feedback">
+                          Please select a valid state.
+                        </div>
+                      </div>
+
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Append</button>
+                </div>
+
+
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script src="{{url_for('static', filename='js/main.js')}}"></script>
 {% endblock  %}

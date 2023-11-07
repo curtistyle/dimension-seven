@@ -7,6 +7,9 @@ import json
 
 
 class DataMethods():
+    
+    GENRES = {'punk', 'alternative metal', 'post-grunge', 'punk', 'rock', 'skate punk', 'socal pop punk', 'modern rock', 'alternative rock', 'conscious hip hop', 'funk metal', 'hard rock', 'nu metal', 'political hip hop','rap metal', 'rap rock', 'metal', 'old school thrash', 'thrash metal'}
+    
     @staticmethod
     def get_pos():...
     
@@ -20,6 +23,17 @@ class DataMethods():
             base = { 'artist': words[0], 'album': words[1], 'track' : words[2], 'time' : words[3], 'genres': genres }
             lyst.append(base)
         return lyst  
+
+    @staticmethod
+    def values_to_listDyct(**kwargs):
+        dyct = {}
+        lyst = []
+        for key, item in kwargs.items():
+            dyct.update({key : item})
+        lyst.append(dyct)
+        return lyst
+        
+        
 
     @staticmethod
     def listString_to_listInt( lyst : list ):
@@ -52,15 +66,22 @@ class DataMethods():
         new_lyst = []
         for item in set_lyst:
             new_lyst.append([item, lyst.count( item )])
+            
+        aux = []
         if genres:
             for a in new_lyst:
+                index = 0
                 for b in genres:
                     if (a[0] == b[0]):
                         b[1] += a[1]
-                        new_lyst.remove(a)
-            genres.extend( new_lyst )
+                    else:
+                        index += 1
+                if index == len(genres):
+                    aux.append(a)
         else:
             genres.extend( new_lyst )
+        if aux:
+            genres.extend(aux)
         return genres
     
     @staticmethod
@@ -287,28 +308,29 @@ class File():
         
     def delete(self, data : list, **info ):
         self.fread()
-        
-        for key, item in info.items():
-            if key in self.__data['list'].keys():
-                self.__data['list'][key] = item
-        DataMethods.bubbleSortWithTweak( self.__data['data'], 'track' ) # ? track list file
-        
-        new_list = []
-        for item in data:
-            pos = DataMethods.binarySearch( item['track'], 'track', self.__data['data'] )
-            if pos is not None:
-                new_list.append( self.__data['data'][pos] )
-                # self.__data['data'].pop(pos)
-        
-        new_genre = [] 
-        for item in new_list:
-            new_genre = DataMethods.countGenres( item['genres'], new_genre )    
-        
-        print( f"{new_genre=}")
-        print( f"{new_list=}")
-        self.__data['data'] = new_list
-        self.__data['list']['genres'] = new_genre
-        self.fwrite()
+        if (len( data ) != len(self.__data['data'])):
+            for key, item in info.items():
+                if key in self.__data['list'].keys():
+                    self.__data['list'][key] = item
+            DataMethods.bubbleSortWithTweak( self.__data['data'], 'track' ) # ? track list file
+            
+            new_list = []
+            for item in data:
+                pos = DataMethods.binarySearch( item['track'], 'track', self.__data['data'] )
+                if pos is not None:
+                    new_list.append( self.__data['data'][pos] )
+                    # self.__data['data'].pop(pos)
+            
+            new_genre = [] 
+            for item in new_list:
+                new_genre = DataMethods.countGenres( item['genres'], new_genre )    
+            
+            self.__data['data'] = new_list
+            self.__data['list']['genres'] = new_genre
+            self.fwrite()
+        else:
+            self.overwrite(data,info=info)
+            new_genre = self.__data['list']['genres']
         return new_genre
     
     def rename_file(self, value):
@@ -349,6 +371,11 @@ class File():
         self.fread()
         total_time = self.__data.get('list')['total_time']
         old_gen = self.__data.get('list')['genres']
+        
+        print("####################")
+        print( f"{genre=}", end="\n\n" )
+        print( f"{old_gen=}", end="\n\n" )
+        
         new_gen = DataMethods.countGenres( genre, old_gen )
         self.__data.get('list')['genres'] = new_gen
         for item in range(0, len(lyst)):
@@ -449,7 +476,7 @@ class mySpotify():
                 list_albums = []
                 pos = 1
                 
-                print( artist_item, end="\n\n" )
+                print( f"{artist_item['genres']=}", end="\n\n" )
                 
                 # Obtener los álbumes del artista
                 sp_albums = self.__sp.artist_albums(artist_id, album_type="album")

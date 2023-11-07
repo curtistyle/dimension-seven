@@ -1,0 +1,43 @@
+{% extends "layout.html" %}
+
+{% block view_public_list %}
+
+<div class="card-title text-center mt-5 pt-5" >
+    <h1 class="text-secondary display-2">{{info}}</h1>
+</div>
+
+<div class="navbar p-3" data-bs-theme="dark">
+    <table  id="table" class="table" style="font-size: x-large;">
+        <thead>
+            <tr class="">
+                <th class="text-primary-emphasis" scope="col"><strong>#</strong></th>
+                <th class="text-primary-emphasis" scope="col"><strong>Track</strong></th>
+                <th class="text-primary-emphasis" scope="col"><strong>Artist / Album</strong></th>
+                <th class="text-primary-emphasis" scope="col"><strong>Time</strong></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for item in data %}
+        <tr>
+            <!-- order -->
+            <td><input type="hidden" name="order" value="{{item['order']}}">{{item['order']}}</td>
+            <!-- track -->
+            <td class="align-middle"><input type="hidden" name="track" value="{{item['track']}}">{{item['track']}}</td>
+            <td class="flex-column">
+                <!-- artist -->
+                <input type="hidden" name="artist" value="{{item['artist']}}">{{item['artist']}}
+                <!-- album -->
+                <input class="row-cols-1" type="hidden" name="album" value="{{item['album']}}"><small class="text-secondary">{{item['album']}}</small>
+            </td> 
+            <!-- time -->
+            <td class="align-middle"><input type="hidden" name="time" value="{{item['time']}}">{{item['time']}}</td>
+            
+        </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+</div> 
+<div style="height: 30px;">
+
+</div>
+{% endblock  %}

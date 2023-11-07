@@ -2,28 +2,53 @@
 
 {% block view_profiles %}
 
-<div class="container row m-0 align-self-start pt-5 mt-5">
+<div class="container-fluid row m-0 justify-content-lg-around pt-5 mt-5">
+
+<h1 class="text-center">Profiles</h1>
+<hr class="mt-3 mb-5">
+
 {% for user in data_users %}
 
-    <div class="card border-primary mb-3 col-3  mx-2">
+    <div class="card border-primary col-4 mx-4 my-4 ">
         <!-- user name -->
-        <h3 class="card-header"> {{user['name']}} </h3>
+        <h3 class="card-header"> {{user['user']['nickname']}} </h3>
         <div class="card-body">
-            <h5 class="card-title">Special title treatment</h5>
-            <h6 class="card-subtitle text-muted">Support card subtitle</h6>
+            <h5 class="card-title">{{user['user']['name']}} {{user['user']['surname']}}</h5>
+            <h6 class="card-subtitle text-muted">Role: {{ user['user']['role'] }}</h6>
         </div>
-        <svg xmlns="http://www.w3.org/2000/svg" class="d-block user-select-none" width="100%" height="200" aria-label="Placeholder: Image cap" focusable="false" role="img" preserveAspectRatio="xMidYMid slice" viewBox="0 0 318 180" style="font-size:1.125rem;text-anchor:middle">
+        <!-- <svg xmlns="http://www.w3.org/2000/svg" class="d-block user-select-none" width="100%" height="200" aria-label="Placeholder: Image cap" focusable="false" role="img" preserveAspectRatio="xMidYMid slice" viewBox="0 0 318 180" style="font-size:1.125rem;text-anchor:middle">
             <rect width="100%" height="100%" fill="#868e96"></rect>
             <text x="50%" y="50%" fill="#dee2e6" dy=".3em">Image cap</text>
-        </svg>
+        </svg> -->
+        {% if user['user']['img_patch'] %}
+            <img class="mx-2 opacity-75" style="border-radius: 10%; border: 2px solid grey;" src="{{ url_for('static', filename='/uploads/' + user['user']['img_patch']) }}">
+        {% else %}
+            <svg xmlns="http://www.w3.org/2000/svg" class="d-block user-select-none" width="100%" height="200" aria-label="Placeholder: Image cap" focusable="false" role="img" preserveAspectRatio="xMidYMid slice" viewBox="0 0 318 180" style="font-size:1.125rem;text-anchor:middle">
+                <rect width="100%" height="100%" fill="#868e96"></rect>
+                <text x="50%" y="50%" fill="#dee2e6" dy=".3em">PONE UNA IMAGEN GARCA</text>
+            </svg>
+        {% endif %}
         <div class="card-body">
             <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
         </div>
-        <ul class="list-group list-group-flush">
-            <li class="list-group-item">Cras justo odio</li>
-            <li class="list-group-item">Dapibus ac facilisis in</li>
-            <li class="list-group-item">Vestibulum at eros</li>
-        </ul>
+        
+        
+        <div class="overflow-auto" style="max-height: 15%;">
+            <ul class="list-group list-group-flush">
+                {% if user['data'] %}
+                    {% for data in user['data'] %}
+                    <a href="lyst?user={{user['user']['nickname']}}&id_list={{data[0]}}">
+                        <li type="button" class="list-group-item text-info-emphasis">{{data[2]}}</li>
+                    </a>
+                    {% endfor %}
+                {% else %}
+                <li class="list-group-item text-warning-emphasis">the user did not create lists....</li>
+                {% endif %}
+
+            </ul>
+        </div>
+
+        
         <div class="card-body">
             <a href="#" class="card-link">Card link</a>
             <a href="#" class="card-link">Another link</a>

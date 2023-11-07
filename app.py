@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, session, redirect, url_for
-from database import consultar_usuario, agregar_usuario, agregar_lista, consultar_lista, obtener_listas, obtener_lista, eliminar_lista, obtener_usuario, actualizar_usuario, actualizar_lista, obtener_todo
+from database import consultar_usuario, agregar_usuario, agregar_lista, consultar_lista, obtener_listas, obtener_lista, eliminar_lista, obtener_usuario, actualizar_usuario, actualizar_lista, obtener_todo, obtener_id_usuario
 from config import SECRET_KEY
 from interface import mySpotify, File, DataMethods, FileUpload
 from data_consistency import Consistency, AlertMessages
@@ -32,7 +32,35 @@ def view_profiles():
         
         data_users = obtener_todo()
         
+              
         return render_template("view_profiles.html", state=True, nickname=session['nickname'], data_users=data_users)
+    else:
+        data_users = obtener_todo()
+        return render_template("view_profiles.html", state=False, data_users=data_users)
+        
+    
+
+@app.route("/lyst")
+def view_public_list():
+    if estado_usuario():
+        
+        user = request.args.get('user')
+        id_list = request.args.get('id_list')
+        
+        data = File(id_list).get_data()
+        info = File(id_list).get_info()
+        
+        return render_template("view_public_list.html", state=True, nickname=session['nickname'], data=data, info=info['name'])
+    else:
+        
+        user = request.args.get('user')
+        id_list = request.args.get('id_list')
+        
+        data = File(id_list).get_data()
+        info = File(id_list).get_info()
+        
+        return render_template("view_public_list.html", state=False, data=data, info=info['name'])
+
 
 @app.route("/edit_profile", methods=['GET', 'POST'])
 def edit_profile():
@@ -149,7 +177,7 @@ def add_tracks():
                 for gen in range( 0, len(tracks) ):
                     lyst_gen.extend( session['genres'] )
                 
-                print( f"> {lyst_gen=}" ,end="\n\n" )
+                # print( f"> {lyst_gen=}" ,end="\n\n" )
                 
                 total_time, amount, new_gen = File(str(id_list)).data_insert(tracks, lyst_gen, error)
                 
@@ -159,6 +187,25 @@ def add_tracks():
             else:
                 return redirect(url_for("index"))
 
+
+@app.route("/add_track_manual", methods=['POST'])
+def add_track_manual():
+    if estado_usuario():
+        if request.method == 'POST':
+            
+            track = request.form['add_track'] 
+            album = request.form['add_album'] 
+            artist = request.form['add_artist'] 
+            time = request.form['add_time'] 
+            genre = request.form['add_genre'] 
+               
+            lyst = DataMethods.values_to_listDyct(artist=artist, album=album, track=track, time=time, genres=[genre])
+                   
+            total_time, amount, new_gen = File(str(session['list_target'])).data_insert(lyst, [genre])
+            
+            actualizar_lista( session['list_target'], amount, total_time, "private", new_gen )
+            
+            return redirect( url_for("edit_list") )
    
 @app.route("/create_list", methods=['GET', 'POST'])
 def create_list():
@@ -195,11 +242,15 @@ def edit_list():
             session['list_target'] = list_target
             data = File(str(list_target)).get_data() 
             info = File(str(list_target)).get_info()
-            return render_template("edit_list.html", state=True, nickname=session['nickname'], data=data, info=info)
+            
+            genres = DataMethods.GENRES
+            
+            return render_template("edit_list.html", state=True, nickname=session['nickname'], data=data, info=info, genres=genres)
         if request.method == 'GET':
             data = File(str(session['list_target'])).get_data() 
             info = File(str(session['list_target'])).get_info()
-            return render_template("edit_list.html", state=True, nickname=session['nickname'], data=data, info=info)
+            genres = DataMethods.GENRES
+            return render_template("edit_list.html", state=True, nickname=session['nickname'], data=data, info=info, genres=genres)
 
 
 
@@ -220,13 +271,22 @@ def save_list():
                                                     order=DataMethods.listString_to_listInt(request.form.getlist('order')), 
                                                     time=request.form.getlist('time') )
             
-            total_time, amount = DataMethods.recount( lyst )
+            for item in lyst:
+                print(item)
+            
+            if (lyst != []):
+                total_time, amount = DataMethods.recount( lyst )
+            else:
+                total_time = "00:00"
+                amount = 0
             
             new_genre = File(str(session['list_target'])).delete( lyst, name=name, description=description, privacy=privacy, total_time=total_time, amount=amount )
             
             actualizar_lista( session['list_target'], amount, total_time, privacy, {'gen': new_genre} )
             
             return redirect( url_for("edit_list") )
+
+
             
 @app.route("/view_lists", methods=['GET', 'POST'])
 def view_lists():
@@ -250,6 +310,8 @@ def delete_list():
 @app.route("/test", methods=['GET'])
 def test():
     return render_template("test.html")
+
+
 
 if __name__=="__main__":
     # app.run(port=5000, host='0.0.0.0', debug=True)
