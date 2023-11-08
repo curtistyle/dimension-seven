@@ -3,7 +3,7 @@ from database import consultar_usuario, agregar_usuario, agregar_lista, consulta
 from config import SECRET_KEY
 from interface import mySpotify, File, DataMethods, FileUpload
 from data_consistency import Consistency, AlertMessages
-# from waitress import serve
+from waitress import serve
 from flask_wtf import FlaskForm
 from wtforms import FileField
 from werkzeug.utils import secure_filename
@@ -38,7 +38,20 @@ def view_profiles():
         data_users = obtener_todo()
         return render_template("view_profiles.html", state=False, data_users=data_users)
         
-    
+@app.route("/add_fav", methods=["POST"])
+def add_fav():
+    if estado_usuario():
+       if request.method == 'POST':
+            fav = request.form['fav']
+            user_fav, lyst_target, order = fav.split('&')
+            print( f"{user_fav=}, {lyst_target=}, {order=}" )
+
+            File(str(lyst_target)).add_fav(session['id'],order)
+            
+            data = File(lyst_target).get_data()
+            info = File(lyst_target).get_info()
+
+            return render_template("view_public_list.html", state=True, nickname=session['nickname'], data=data, info=info['name'], lyst_target=lyst_target, user_list=user_fav)
 
 @app.route("/lyst")
 def view_public_list():
@@ -50,7 +63,7 @@ def view_public_list():
         data = File(id_list).get_data()
         info = File(id_list).get_info()
         
-        return render_template("view_public_list.html", state=True, nickname=session['nickname'], data=data, info=info['name'])
+        return render_template("view_public_list.html", state=True, nickname=session['nickname'], data=data, info=info['name'], lyst_target=id_list, user_list=user)
     else:
         
         user = request.args.get('user')
@@ -61,6 +74,7 @@ def view_public_list():
         
         return render_template("view_public_list.html", state=False, data=data, info=info['name'])
 
+@app.endpoint
 
 @app.route("/edit_profile", methods=['GET', 'POST'])
 def edit_profile():
@@ -171,19 +185,18 @@ def add_tracks():
             lyst_target = request.form.get('select')
             id_list = consultar_lista(session['id'], lyst_target)
             if id_list:
-                # ! editando
+                
                 tracks = DataMethods.format_list( tracks, session['genres'] )
                 lyst_gen = []
                 for gen in range( 0, len(tracks) ):
                     lyst_gen.extend( session['genres'] )
-                
-                # print( f"> {lyst_gen=}" ,end="\n\n" )
                 
                 total_time, amount, new_gen = File(str(id_list)).data_insert(tracks, lyst_gen, error)
                 
                 actualizar_lista( id_list, amount, total_time, "private", new_gen )
                 
                 return redirect(url_for("index"))
+                
             else:
                 return redirect(url_for("index"))
 
@@ -199,7 +212,7 @@ def add_track_manual():
             time = request.form['add_time'] 
             genre = request.form['add_genre'] 
                
-            lyst = DataMethods.values_to_listDyct(artist=artist, album=album, track=track, time=time, genres=[genre])
+            lyst = DataMethods.values_to_listDyct(artist=artist, album=album, track=track, time=time, genres=[genre], fav=[])
                    
             total_time, amount, new_gen = File(str(session['list_target'])).data_insert(lyst, [genre])
             
@@ -252,11 +265,6 @@ def edit_list():
             genres = DataMethods.GENRES
             return render_template("edit_list.html", state=True, nickname=session['nickname'], data=data, info=info, genres=genres)
 
-
-
-
-
-
 @app.route("/save_list", methods=['POST'])  
 def save_list():
     if estado_usuario():
@@ -264,12 +272,18 @@ def save_list():
             name = request.form['list_name']
             description = request.form['description']
             privacy = request.form.get('btnradio')
-
+            fav = request.form.getlist('fav')
+            genre = request.form.getlist('genres')
+            lyst_fav = list(map( eval, fav ))
+            lyst_genre = list(map( eval, genre ))   
+            
             lyst = DataMethods.kwargsLists_to_dictionaryList( artist=request.form.getlist('artist'),  
                                                     album=request.form.getlist('album'),
                                                     track=request.form.getlist('track'),
                                                     order=DataMethods.listString_to_listInt(request.form.getlist('order')), 
-                                                    time=request.form.getlist('time') )
+                                                    time=request.form.getlist('time'),
+                                                    genres=lyst_genre,
+                                                    fav=lyst_fav)
             
             for item in lyst:
                 print(item)
@@ -280,14 +294,13 @@ def save_list():
                 total_time = "00:00"
                 amount = 0
             
-            new_genre = File(str(session['list_target'])).delete( lyst, name=name, description=description, privacy=privacy, total_time=total_time, amount=amount )
+            new_genre = File(str(session['list_target'])).overrite( lyst, name=name, description=description, privacy=privacy, total_time=total_time, amount=amount )
             
             actualizar_lista( session['list_target'], amount, total_time, privacy, {'gen': new_genre} )
             
             return redirect( url_for("edit_list") )
 
 
-            
 @app.route("/view_lists", methods=['GET', 'POST'])
 def view_lists():
     if estado_usuario():
@@ -311,11 +324,9 @@ def delete_list():
 def test():
     return render_template("test.html")
 
-
-
 if __name__=="__main__":
     # app.run(port=5000, host='0.0.0.0', debug=True)
-    # serve(app, host='0.0.0.0', port=80, threads=2)
+    #serve(app, host='0.0.0.0', port=80, threads=2)
     app.run(debug=True)
     
     

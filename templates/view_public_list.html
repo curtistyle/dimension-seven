@@ -7,36 +7,63 @@
 </div>
 
 <div class="navbar p-3" data-bs-theme="dark">
-    <table  id="table" class="table" style="font-size: x-large;">
-        <thead>
-            <tr class="">
-                <th class="text-primary-emphasis" scope="col"><strong>#</strong></th>
-                <th class="text-primary-emphasis" scope="col"><strong>Track</strong></th>
-                <th class="text-primary-emphasis" scope="col"><strong>Artist / Album</strong></th>
-                <th class="text-primary-emphasis" scope="col"><strong>Time</strong></th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for item in data %}
-        <tr>
-            <!-- order -->
-            <td><input type="hidden" name="order" value="{{item['order']}}">{{item['order']}}</td>
-            <!-- track -->
-            <td class="align-middle"><input type="hidden" name="track" value="{{item['track']}}">{{item['track']}}</td>
-            <td class="flex-column">
-                <!-- artist -->
-                <input type="hidden" name="artist" value="{{item['artist']}}">{{item['artist']}}
-                <!-- album -->
-                <input class="row-cols-1" type="hidden" name="album" value="{{item['album']}}"><small class="text-secondary">{{item['album']}}</small>
-            </td> 
-            <!-- time -->
-            <td class="align-middle"><input type="hidden" name="time" value="{{item['time']}}">{{item['time']}}</td>
-            
-        </tr>
-        {% endfor %}
-    </tbody>
-    </table>
+    
+        <table  id="table" class="table" style="font-size: x-large;">
+            <thead>
+                <tr class="">
+                    <th class="text-primary-emphasis" scope="col"><strong>#</strong></th>
+                    <th class="text-primary-emphasis" scope="col"><strong>Track</strong></th>
+                    <th class="text-primary-emphasis" scope="col"><strong>Artist / Album</strong></th>
+                    <th class="text-primary-emphasis" scope="col"><strong>Time</strong></th>
+                    <th class="text-primary-emphasis col-sm-2" scope="col"><strong>Fav</strong></th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for item in data %}
+                <tr>
+                    <!-- order -->
+                    <td><input type="hidden" name="order" value="{{item['order']}}">{{item['order']}}</td>
+                    <!-- track -->
+                    <td class="align-middle"><input type="hidden" name="track" value="{{item['track']}}">{{item['track']}}</td>
+                    <td class="flex-column">
+                        <!-- artist -->
+                        <input type="hidden" name="artist" value="{{item['artist']}}">{{item['artist']}}
+                        <!-- album -->
+                        <input class="row-cols-1" type="hidden" name="album" value="{{item['album']}}"><small class="text-secondary">{{item['album']}}</small>
+                    </td> 
+                    <!-- time -->
+                    <td class="align-middle"><input type="hidden" name="time" value="{{item['time']}}">{{item['time']}}
+                    </td>
+                    <td class="row align-items-start ">
+                        {% if state == True %}
+                            <form class="col-3 " action="/add_fav" method="POST">
+                                <button type="submit" class="bg-primary"  name="fav" value="{{ user_list }}&{{lyst_target}}&{{ item['order'] }}">👍</button>
+                            </form>
+                        {% else %}
+                            <button disabled type="button" class="col-3 bg-primary"  name="" value="">👍</button>
+                        </form>
+
+                        {% endif %}
+
+                        {% if item['fav'] %}
+                            {% for f in item['fav'] %}
+                                {% if loop.index <= 3 %}
+                                    <label class="col-1">⭐</label>         
+                                {% endif %}
+                            {% endfor %}
+                            {% if item['fav']|length > 3 %}
+                                <label class="mx-2 col-1 font-monospace">+{{item['fav']|length - 3}}</label>    
+                            {% endif %} 
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    
 </div> 
+
+
 <div style="height: 30px;">
 
 </div>

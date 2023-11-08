@@ -448,39 +448,79 @@ time = [
 
 # print( lista.count("") )
 
-from interface import DataMethods
+# from interface import DataMethods
 
-genre=['modern rock', 'permanent wave', 'punk', 'rock']
+# genre=['modern rock', 'permanent wave', 'punk', 'rock']
 
-old_gen=[['post-grunge', 2], ['alternative metal', 2], ['skate punk', 1], ['rock', 3], ['socal pop punk', 2], ['punk', 1], ['groove metal', 1], ['texas metal', 1], ['hard rock', 
-1], ['metal', 1], ['nu metal', 1], ['old school thrash', 1], ['alternative metal', 1], ['punk', 1], ['skate punk', 1]]
+# old_gen=[['post-grunge', 2], ['alternative metal', 2], ['skate punk', 1], ['rock', 3], ['socal pop punk', 2], ['punk', 1], ['groove metal', 1], ['texas metal', 1], ['hard rock', 
+# 1], ['metal', 1], ['nu metal', 1], ['old school thrash', 1], ['alternative metal', 1], ['punk', 1], ['skate punk', 1]]
 
-def countGenres( lyst : list, genres : list ):
-    if (lyst.count("permanent wave")) > 0:
-        lyst.remove("permanent wave")
-    set_lyst = set( lyst )
-    new_lyst = []
-    for item in set_lyst:
-        new_lyst.append([item, lyst.count( item )])
+# def countGenres( lyst : list, genres : list ):
+#     if (lyst.count("permanent wave")) > 0:
+#         lyst.remove("permanent wave")
+#     set_lyst = set( lyst )
+#     new_lyst = []
+#     for item in set_lyst:
+#         new_lyst.append([item, lyst.count( item )])
         
-    aux = []
-    if genres:
-        for a in new_lyst:
-            index = 0
-            for b in genres:
-                if (a[0] == b[0]):
-                    b[1] += a[1]
-                else:
-                    index += 1
-            if index == len(genres):
-                aux.append(a)
+#     aux = []
+#     if genres:
+#         for a in new_lyst:
+#             index = 0
+#             for b in genres:
+#                 if (a[0] == b[0]):
+#                     b[1] += a[1]
+#                 else:
+#                     index += 1
+#             if index == len(genres):
+#                 aux.append(a)
+#     else:
+#         genres.extend( new_lyst )
+#     if a:
+#         genres.extend(aux)
+#     return genres
+
+# gen = countGenres(genre, old_gen)
+
+# print(gen)
+
+# dyct = {"nombre" : "carlos", "fav": ["asd"]}
+
+# print( dyct.setdefault("fav", []) )
+
+# print()
+# print(dyct)
+
+genres = { "gen" : [] }
+
+lista1 = ['alternative metal', 'permanent wave', 'post-grunge', 'punk', 'rock', 'skate punk', 'socal pop punk']
+
+lista2 = ['alternative metal', 'permanent wave', 'post-grunge', 'rock', 'skate punk', 'socal pop punk']
+
+lista3 = ['alternative metal', 'permanent wave', 'post-grunge', 'punk', 'rock', 'skate punk', 'socal pop punk']
+
+genres2 = { "gen" : [['alternative metal', 1],['rock', 1],['metal',1]] }
+
+def recuento_generos( generos : list, total : list ):
+    """`generos` es la lista de genero  de cada uno de los temas, `total` es el total de generos guardados en el archivo o db"""
+    if total == []:
+        nuevo_total = []
+        for indice, elemento in enumerate( generos ):
+            if elemento != 'permanent wave':
+                nuevo_total.append([1,elemento])
+        return nuevo_total
     else:
-        genres.extend( new_lyst )
-    if a:
-        genres.extend(aux)
-    return genres
+        for elemento in generos:
+            if elemento != 'permanent wave':
+                centinela = False
+                for indeice, genero in enumerate( total ):
+                    if elemento == genero[0]:
+                        genero[1] += 1
+                        centinela = True
+                if centinela == False:
+                    total.append([elemento, 1])
+        return total
+        
+    
 
-gen = countGenres(genre, old_gen)
-
-print(gen)
-
+print(recuento_generos(lista1, genres2['gen']))

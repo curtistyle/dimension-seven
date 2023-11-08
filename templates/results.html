@@ -3,8 +3,14 @@
 {% block results %}
 
 <div class="card-title text-center mt-3 pt-3">
+    <div style="min-height: 60px;"></div>
+    <form class="input-group mb-3" action="/search" method="POST">
+        <input class="form-control bg-primary form-control-lg opacity-75" type="text" placeholder="Artist..." id="inputSearch" name="artist" value="">
+        <button type="submit" class="btn btn-outline-secondary"><img src="{{url_for('static', filename='img/search.svg')}}" class="fw-lighter" width="40"></button>
+    </form>
     <h1 class="text-secondary">{{ artist }}</h1>
 </div>
+
 
 <div class="card form-group m-5" >
     <form action="/add_tracks" method="POST">

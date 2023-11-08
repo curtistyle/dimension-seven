@@ -90,6 +90,8 @@
                 <td class="align-middle">
                     <img class="mx-2" src="{{url_for('static', filename='img/info.png')}}" width="25px" height="25px">
                     <a type="button" onclick="pop(this);"><img class="mx-2" src="{{url_for('static', filename='img/garbage_collector.png')}}" width="25px" height="25px"></a>
+                    <input type="hidden" name="fav" value="{{item['fav']}}">
+                    <input type="hidden" name="genres" value="{{item['genres']}}">
                 </td>
             </tr>
             {% endfor %}
@@ -144,7 +146,7 @@
                         <select name="add_genre" class="form-select" id="validationCustom04" required>
                             <option  selected disabled value="">Choose...</option>
                             {% for genre in genres %}
-                            <option value="{{genre}}" >{{genre}}</option>
+                            <option value="{{genre}}">{{genre}}</option>
                             {% endfor %}
                         </select>
                         <div class="invalid-feedback">

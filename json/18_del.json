@@ -1,0 +1,48 @@
+{
+  "user": { "id": 1, "email": "curtis@example.com", "nickname": "Curtis" },
+  "list": {
+    "id": "18",
+    "name": "ultima",
+    "amount": 3,
+    "total_time": "00:06:18",
+    "privacy": "danger",
+    "description": "asdasd",
+    "genres": {
+      "gen": [
+        ["rock", 3],
+        ["punk", 3],
+        ["skate punk", 3],
+        ["post-grunge", 3],
+        ["permanent wave", 2],
+        ["alternative metal", 3],
+        ["socal pop punk", 3]
+      ]
+    }
+  },
+  "data": [
+    {
+      "artist": "The Offspring",
+      "album": "Americana",
+      "track": "Have You Ever",
+      "order": 1,
+      "time": "03:56",
+      "fav": [1, 2]
+    },
+    {
+      "artist": "The Offspring",
+      "album": "Americana",
+      "track": "Welcome",
+      "order": 2,
+      "time": "00:09",
+      "fav": []
+    },
+    {
+      "artist": "The Offspring",
+      "album": "Americana",
+      "track": "Staring At The Sun",
+      "order": 3,
+      "time": "02:13",
+      "fav": [1, 2, 3]
+    }
+  ]
+}

@@ -20,7 +20,7 @@ class DataMethods():
         print("ITEMS: ", items)
         for item in items:
             words = item.split('¯')
-            base = { 'artist': words[0], 'album': words[1], 'track' : words[2], 'time' : words[3], 'genres': genres }
+            base = { 'artist': words[0], 'album': words[1], 'track' : words[2], 'time' : words[3], 'genres': genres, 'fav': [] }
             lyst.append(base)
         return lyst  
 
@@ -60,8 +60,10 @@ class DataMethods():
     
     @staticmethod
     def countGenres( lyst : list, genres : list ):
-        if (lyst.count("permanent wave")) > 0:
-            lyst.remove("permanent wave")
+        ocurrencia = lyst.count("permanent wave")
+        if (ocurrencia) > 0:
+            for i in range(ocurrencia):
+                lyst.remove("permanent wave")
         set_lyst = set( lyst )
         new_lyst = []
         for item in set_lyst:
@@ -79,10 +81,39 @@ class DataMethods():
                 if index == len(genres):
                     aux.append(a)
         else:
+            
+            # print( f"###{genres=}", end="\n\n" )
+            # print( f"###{new_lyst=}", end="\n\n" )
+            
             genres.extend( new_lyst )
         if aux:
-            genres.extend(aux)
+            # print( f"###{genres=}", end="\n\n" )
+            # print( f"###{aux=}", end="\n\n" )
+            genres['gen'].extend(aux)
         return genres
+    
+    @staticmethod
+    def recuento_generos( generos : list, total : list ):
+        """`generos` es la lista de genero  de cada uno de los temas, `total` es el total de generos guardados en el archivo o db"""
+        if total == []:
+            nuevo_total = []
+            for indice, elemento in enumerate( generos ):
+                if elemento != 'permanent wave':
+                    nuevo_total.append([elemento, 1])
+            return nuevo_total
+        else:
+            for elemento in generos:
+                if elemento != 'permanent wave':
+                    centinela = False
+                    for indice, genero in enumerate( total ):
+                        if elemento == genero[0]:
+                            genero[1] += 1
+                            centinela = True
+                    if centinela == False:
+                        total.append([elemento, 1])
+            return total
+    
+    
     
     @staticmethod
     def recount( lyst : list ):
@@ -296,15 +327,32 @@ class File():
         for key, item in kwargs.items():
             self.data.get("list")[key] = item
         self.fwrite()
+    
+    
+    # new_genre = File(str(session['list_target'])).delete( lyst, name=name, description=description, privacy=privacy, total_time=total_time, amount=amount )
+    
       
-        # ! falta, refactorizar
-    def overwrite(self, data : list, **info ):
+    def overrite(self, lyst_tracks, **info):
         self.fread()
-        self.__data['data'] = data
+        
+        # * Guarda la informacion de la lista.
         for key, item in info.items():
             if key in self.__data['list'].keys():
                 self.__data['list'][key] = item
+        
+        # * Recuento de generos
+        total = []
+        for track in lyst_tracks:
+            total = DataMethods.recuento_generos( track['genres'], total ) 
+        self.__data['list']['genres'] = { 'gen' : total }.copy()
+        
+        # * Reemplaza los tracks de la paginas por los del archivo.
+        self.__data['data'] = lyst_tracks
+        DataMethods.bubbleSortWithTweak( self.__data['data'], 'track' )
         self.fwrite()
+        return { 'gen' : total }.copy()
+        
+        
         
     def delete(self, data : list, **info ):
         self.fread()
@@ -321,9 +369,15 @@ class File():
                     new_list.append( self.__data['data'][pos] )
                     # self.__data['data'].pop(pos)
             
-            new_genre = [] 
+            lyst_genre = []
             for item in new_list:
-                new_genre = DataMethods.countGenres( item['genres'], new_genre )    
+                
+                # ! EDDDITANDOOOOOOOOOOO
+                
+                print( f"###{item['genres']=}", end="\n\n" )
+                print( f"###{new_genre=}", end="\n\n" )
+                
+                lyst_genre = DataMethods.countGenres( item['genres'], lyst_genre )    
             
             self.__data['data'] = new_list
             self.__data['list']['genres'] = new_genre
@@ -332,6 +386,17 @@ class File():
             self.overwrite(data,info=info)
             new_genre = self.__data['list']['genres']
         return new_genre
+    
+    def add_fav(self, id_user, order):
+        self.fread()
+        for item in self.__data['data']:
+            if item['order'] == int(order):
+                if item.setdefault("fav", []) == []:
+                    item['fav'].append(id_user)
+                else:
+                    if id_user in item['fav']:
+                        item['fav'].remove(id_user)
+        self.fwrite()
     
     def rename_file(self, value):
         original_path = self.__path
@@ -372,9 +437,6 @@ class File():
         total_time = self.__data.get('list')['total_time']
         old_gen = self.__data.get('list')['genres']
         
-        print("####################")
-        print( f"{genre=}", end="\n\n" )
-        print( f"{old_gen=}", end="\n\n" )
         
         new_gen = DataMethods.countGenres( genre, old_gen )
         self.__data.get('list')['genres'] = new_gen
