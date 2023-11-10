@@ -2,12 +2,13 @@ from flask import Flask, render_template, request, session, redirect, url_for
 from database import consultar_usuario, agregar_usuario, agregar_lista, consultar_lista, obtener_listas, obtener_lista, eliminar_lista, obtener_usuario, actualizar_usuario, actualizar_lista, obtener_todo, obtener_id_usuario
 from config import SECRET_KEY
 from interface import mySpotify, File, DataMethods, FileUpload
-from data_consistency import Consistency, AlertMessages
+from data_consistency import Consistency, AlertMessages, TerminalMessages
 from waitress import serve
 from flask_wtf import FlaskForm
 from wtforms import FileField
 from werkzeug.utils import secure_filename
 import os
+from flask_talisman import Talisman
 
 
 
@@ -32,10 +33,14 @@ def view_profiles():
         
         data_users = obtener_todo()
         
+        TerminalMessages.out( "~ Ingreso a \'Profiles\'", user=session['nickname'], id=session['id'] )
               
         return render_template("view_profiles.html", state=True, nickname=session['nickname'], data_users=data_users)
     else:
         data_users = obtener_todo()
+        
+        TerminalMessages.out( "? Ingreso a \'Profiles\'", ip=request.remote_addr )
+        
         return render_template("view_profiles.html", state=False, data_users=data_users)
         
 @app.route("/add_fav", methods=["POST"])
@@ -44,12 +49,13 @@ def add_fav():
        if request.method == 'POST':
             fav = request.form['fav']
             user_fav, lyst_target, order = fav.split('&')
-            print( f"{user_fav=}, {lyst_target=}, {order=}" )
 
-            File(str(lyst_target)).add_fav(session['id'],order)
+            track = File(str(lyst_target)).add_fav(session['id'],order)
             
             data = File(lyst_target).get_data()
             info = File(lyst_target).get_info()
+
+            TerminalMessages.out( f"~ El usuario \'{session['nickname']=}\' dio Favorito a ", track=track, list_target=lyst_target, order=order )
 
             return render_template("view_public_list.html", state=True, nickname=session['nickname'], data=data, info=info['name'], lyst_target=lyst_target, user_list=user_fav)
 
@@ -63,6 +69,8 @@ def view_public_list():
         data = File(id_list).get_data()
         info = File(id_list).get_info()
         
+        TerminalMessages.out( f"El usuario \'{session['nickname']}\' ingreso a la lista ", lista=info['name'] )
+        
         return render_template("view_public_list.html", state=True, nickname=session['nickname'], data=data, info=info['name'], lyst_target=id_list, user_list=user)
     else:
         
@@ -72,9 +80,10 @@ def view_public_list():
         data = File(id_list).get_data()
         info = File(id_list).get_info()
         
+        TerminalMessages.out( f"El usuario \'{request.remote_addr}\' ingreso a la lista ", lista=info['name'] )
+        
         return render_template("view_public_list.html", state=False, data=data, info=info['name'])
 
-@app.endpoint
 
 @app.route("/edit_profile", methods=['GET', 'POST'])
 def edit_profile():
@@ -83,7 +92,7 @@ def edit_profile():
             
             data_user = obtener_usuario( int(session['id']) )
             
-            print(data_user)
+            TerminalMessages.out(" ~ Ingreso a \'edit_profile\': ", user=session['nickname'])
             
             return render_template("edit_profile.html", state=True, nickname=session['nickname'], data=data_user[0])
         
@@ -99,6 +108,8 @@ def edit_profile():
             # actualiza db
             actualizar_usuario( session['id'], data_user['firs_name'], data_user['last_name'], data_user['user_name'], data_user['role'], filename )
             
+            TerminalMessages.out(" ~ Actualizo su perfil : ", user=session['nickname'])
+            
             return redirect( url_for("edit_profile") )
 
 @app.route("/", methods=['GET'])
@@ -106,13 +117,22 @@ def index():
     if request.method == 'GET':
         if estado_usuario(): 
             # Si hay una sesion activa:
+            
+            TerminalMessages.out( f"El usuario \'{session['nickname']}\' ingreso a la lista" )
+            
             return render_template("index.html",state=True, nickname=session['nickname'])
         else:
+            
+            TerminalMessages.out( f"El usuario \'{request.remote_addr}\' ingreso a la pagina" )
+            
             return render_template("index.html",state=False)
 
 @app.route("/login", methods=['POST', 'GET'])
 def login():
     if request.method == "GET":
+        
+        TerminalMessages.out( f"Ingreso a \'login\': ", ip=request.remote_addr )
+        
         return render_template("login.html") 
     else:
         email = request.form['email']
@@ -125,14 +145,22 @@ def login():
             session['nickname'] = nickname
             session['id'] = user_id
             # Si existe el usuario en la db:
+            
+            TerminalMessages.out( f"Inicio sesion: ", user=session['nickname'] )
+            
             return redirect(url_for("index"))
         else:
+            
+            TerminalMessages.out( f"Error de inicio de sesion: ", email=email )
             # Si no existe: 
             return render_template("login.html", alert=alert)
     
 @app.route("/sign_up", methods=['GET', 'POST'])
 def sign_up():
     if request.method == "GET":
+        
+        TerminalMessages.out( f"Ingreso a \'sign_up\': ", ip=request.remote_addr )
+        
         return render_template("sign_up.html")
     if request.method == "POST":
         nickname = request.form['nickname']
@@ -140,23 +168,35 @@ def sign_up():
         surname = request.form['surname']
         email = request.form['email']
         password = request.form['password']
-        agregar_usuario(nickname, name, surname, email, password)
+        
+        agregar_usuario( nickname, name, surname, email, password )
+        
+        TerminalMessages.out( f"Se registro a : ", user=nickname )
+        
         return redirect(url_for("index"))
 
 
 @app.route("/log_out")
 def log_out():
-    print("antes: ",len(session.values()))
+    
+    TerminalMessages.out( f"Cerro sesion : ", user=session['nickname'] )
+    
     session.clear()
-    print("despues: ",len(session.values()))
+    
     return redirect(url_for("index"))
         
 @app.route("/search", methods=['GET', 'POST'])
 def search():
     if request.method == 'GET':
         if estado_usuario():
+            
+            TerminalMessages.out( f"Ingreso a \'search\': ", user=session['nickname'] )
+            
             return render_template("search.html", state=estado_usuario(), nickname=session['nickname'])
         else:
+            
+            TerminalMessages.out( f"Ingreso a \'search\': ", ip=request.remote_addr )
+            
             return render_template("search.html", state=False)
     if request.method == 'POST':
         if estado_usuario():
@@ -195,7 +235,7 @@ def add_tracks():
                 
                 actualizar_lista( id_list, amount, total_time, "private", new_gen )
                 
-                return redirect(url_for("index"))
+                return redirect(url_for("search"))
                 
             else:
                 return redirect(url_for("index"))
@@ -306,7 +346,9 @@ def view_lists():
     if estado_usuario():
         if request.method == 'GET':
             lysts_db = obtener_listas( session['id'] )
+            print(f"{lysts_db=}")
             data = File.get_lists( lysts_db )
+            print(f"{data=}")
             return render_template("view_lists.html", state=True, nickname=session['nickname'], data=data)
         
 @app.route("/delete_list", methods=['POST'])
@@ -325,10 +367,10 @@ def test():
     return render_template("test.html")
 
 if __name__=="__main__":
-    # app.run(port=5000, host='0.0.0.0', debug=True)
+    app.run(port=80, host='0.0.0.0', debug=True)
     #serve(app, host='0.0.0.0', port=80, threads=2)
-    app.run(debug=True)
+    # app.run(debug=True)
+    #app.run()
     
-    
-
+# unistall gunicorn, urwid
 

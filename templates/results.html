@@ -42,9 +42,9 @@
                                         <th scope="row">{{loop.index}}</th>
                                         <td>{{track['title']}}</td>
                                         <td>{{track['time']}}</td>
-                                        <td>
+                                        <td data-bs-theme="light">
                                             <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" name="lista" value="{{artist}}¯{{album['title']}}¯{{track['title']}}¯{{track['time']}}" id="flexCheckDefault">
+                                                <input style="accent-color: red;" class="form-check-input" type="checkbox" name="lista" value="{{artist}}¯{{album['title']}}¯{{track['title']}}¯{{track['time']}}" id="flexCheckDefault">
                                             </div>
                                         </td>
                                     </tr>

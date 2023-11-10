@@ -389,14 +389,17 @@ class File():
     
     def add_fav(self, id_user, order):
         self.fread()
+        track = None
         for item in self.__data['data']:
             if item['order'] == int(order):
+                track = item['track']
                 if item.setdefault("fav", []) == []:
                     item['fav'].append(id_user)
                 else:
                     if id_user in item['fav']:
                         item['fav'].remove(id_user)
         self.fwrite()
+        return track
     
     def rename_file(self, value):
         original_path = self.__path
@@ -493,9 +496,10 @@ class File():
     def get_lists( ids_lists : list ) -> list:
         """ get lists of multiples files"""
         lyst = []
-        for id_list in ids_lists:
-            item = File( str( id_list[0] ) ).data.get( 'list' ) 
-            lyst.append( item )
+        if ids_lists:
+            for id_list in ids_lists:
+                item = File( str( id_list[0] ) ).data.get( 'list' ) 
+                lyst.append( item )
         return lyst
     
     @staticmethod

@@ -491,36 +491,41 @@ time = [
 # print()
 # print(dyct)
 
-genres = { "gen" : [] }
+# genres = { "gen" : [] }
 
-lista1 = ['alternative metal', 'permanent wave', 'post-grunge', 'punk', 'rock', 'skate punk', 'socal pop punk']
+# lista1 = ['alternative metal', 'permanent wave', 'post-grunge', 'punk', 'rock', 'skate punk', 'socal pop punk']
 
-lista2 = ['alternative metal', 'permanent wave', 'post-grunge', 'rock', 'skate punk', 'socal pop punk']
+# lista2 = ['alternative metal', 'permanent wave', 'post-grunge', 'rock', 'skate punk', 'socal pop punk']
 
-lista3 = ['alternative metal', 'permanent wave', 'post-grunge', 'punk', 'rock', 'skate punk', 'socal pop punk']
+# lista3 = ['alternative metal', 'permanent wave', 'post-grunge', 'punk', 'rock', 'skate punk', 'socal pop punk']
 
-genres2 = { "gen" : [['alternative metal', 1],['rock', 1],['metal',1]] }
+# genres2 = { "gen" : [['alternative metal', 1],['rock', 1],['metal',1]] }
 
-def recuento_generos( generos : list, total : list ):
-    """`generos` es la lista de genero  de cada uno de los temas, `total` es el total de generos guardados en el archivo o db"""
-    if total == []:
-        nuevo_total = []
-        for indice, elemento in enumerate( generos ):
-            if elemento != 'permanent wave':
-                nuevo_total.append([1,elemento])
-        return nuevo_total
-    else:
-        for elemento in generos:
-            if elemento != 'permanent wave':
-                centinela = False
-                for indeice, genero in enumerate( total ):
-                    if elemento == genero[0]:
-                        genero[1] += 1
-                        centinela = True
-                if centinela == False:
-                    total.append([elemento, 1])
-        return total
+# def recuento_generos( generos : list, total : list ):
+#     """`generos` es la lista de genero  de cada uno de los temas, `total` es el total de generos guardados en el archivo o db"""
+#     if total == []:
+#         nuevo_total = []
+#         for indice, elemento in enumerate( generos ):
+#             if elemento != 'permanent wave':
+#                 nuevo_total.append([1,elemento])
+#         return nuevo_total
+#     else:
+#         for elemento in generos:
+#             if elemento != 'permanent wave':
+#                 centinela = False
+#                 for indeice, genero in enumerate( total ):
+#                     if elemento == genero[0]:
+#                         genero[1] += 1
+#                         centinela = True
+#                 if centinela == False:
+#                     total.append([elemento, 1])
+#         return total
         
     
 
-print(recuento_generos(lista1, genres2['gen']))
+# print(recuento_generos(lista1, genres2['gen']))
+
+
+from data_consistency import TerminalMessages
+
+TerminalMessages.profiles("Ingreso a profiles", user="curtis", id=2)
