@@ -213,9 +213,6 @@ def search():
             data = sp.search(search)
             return render_template("results.html", state=False, albums=data, artist=search)
 
-
-
-
 @app.route("/add_tracks", methods=['GET', 'POST'])
 def add_tracks():
     error = []
@@ -239,7 +236,6 @@ def add_tracks():
                 
             else:
                 return redirect(url_for("index"))
-
 
 @app.route("/add_track_manual", methods=['POST'])
 def add_track_manual():
@@ -369,8 +365,9 @@ def test():
 if __name__=="__main__":
     app.run(port=80, host='0.0.0.0', debug=True)
     #serve(app, host='0.0.0.0', port=80, threads=2)
-    # app.run(debug=True)
+    #app.run(debug=True)
     #app.run()
     
-# unistall gunicorn, urwid
+    
+    # unistall gunicorn, urwid
 
