@@ -526,6 +526,18 @@ time = [
 # print(recuento_generos(lista1, genres2['gen']))
 
 
-from data_consistency import TerminalMessages
+# from data_consistency import TerminalMessages
 
-TerminalMessages.profiles("Ingreso a profiles", user="curtis", id=2)
+# TerminalMessages.profiles("Ingreso a profiles", user="curtis", id=2)
+
+# from database import consultar_usuario
+
+# res = consultar_usuario( 'asd@example.com', '1234' )
+
+# print( f"{res=}" )
+
+from user import User
+
+usuario = User('1', 'Seba', 'Maldo', 'Curtis', 'img.jpg')
+
+print( repr(usuario.path_img) )

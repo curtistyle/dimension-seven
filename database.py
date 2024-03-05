@@ -27,9 +27,9 @@ def consultar_usuario(email : str, password : str):
     print( f"{user=}" )
     cur.close()
     if user:
-        return True, user[5], user[0]
+        return { 'id' : user[0], 'nickname' : user[5], 'email' : user[1] }
     else:
-        return False
+        return None
 
 def obtener_usuario( id_user : int ):
     db = conectar_db()
@@ -40,6 +40,17 @@ def obtener_usuario( id_user : int ):
     user = cur.fetchall()
     cur.close()
     return user
+
+def obtener_imagen_perfil( user_name : str ):
+    db = conectar_db()
+    cur = db.cursor()
+    query = "SELECT profile_img FROM users WHERE nick_name = %s"
+    values = (user_name, )
+    cur.execute(query, values)
+    path = cur.fetchone()
+    cur.close()
+    return path[0]
+
 
 def obtener_id_usuario( nickname : str ):
     db = conectar_db()
@@ -154,14 +165,29 @@ def actualizar_usuario( id_user : int, first_name : str, last_name : str, nickna
     
     print( cur.rowcount, " record(s) affected")
     
-def actualizar_lista( id_list : int, amount : int, total_time : str, privacy : str, genre : dict ):
+def actualizar_lista( id_list : int, amount : int, total_time : str, privacy : str, genre : dict, description : str, name_list : str ):
     db = conectar_db()
     cur = db.cursor()
     genre=json.dumps(genre)
-    query = "UPDATE lists SET amount = %s, total_time = %s, privacy = %s, genre = %s WHERE id = %s"
-    values = ( amount, total_time, privacy, json.dumps(genre), id_list )
+    if ((description == None) and (name_list == None)):
+        query = "UPDATE lists SET amount = %s, total_time = %s, privacy = %s, genre = %s WHERE id = %s"
+        values = ( amount, total_time, privacy, json.dumps(genre), id_list )
+    else:
+        query = "UPDATE lists SET amount = %s, total_time = %s, privacy = %s, genre = %s, description = %s, name = %s WHERE id = %s"
+        values = ( amount, total_time, privacy, json.dumps(genre),description, name_list, id_list )
     cur.execute( query, values )
     db.commit()
     
     print( cur.rowcount, " record(s) affected" )
+    
+def actualizar_time( id_list : int, total_time : str ):
+    db = conectar_db()
+    cur = db.cursor()
+    query = "UPDATE list SET total_time = %s WHERE id = %s"
+    values = (total_time, id_list)
+    cur.execute( query, values )
+    db.commit()
+    
+    print( cur.rowcount, " record(s) affected" )
+    
     

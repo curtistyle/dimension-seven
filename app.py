@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, session, redirect, url_for
-from database import consultar_usuario, agregar_usuario, agregar_lista, consultar_lista, obtener_listas, obtener_lista, eliminar_lista, obtener_usuario, actualizar_usuario, actualizar_lista, obtener_todo, obtener_id_usuario
+from database import consultar_usuario, agregar_usuario, agregar_lista, consultar_lista, obtener_listas, obtener_lista, eliminar_lista, obtener_usuario, actualizar_usuario, actualizar_lista, obtener_todo, obtener_id_usuario, obtener_imagen_perfil, actualizar_time
 from config import SECRET_KEY
 from interface import mySpotify, File, DataMethods, FileUpload
 from data_consistency import Consistency, AlertMessages, TerminalMessages
@@ -9,6 +9,7 @@ from wtforms import FileField
 from werkzeug.utils import secure_filename
 import os
 from flask_talisman import Talisman
+from user import User
 
 
 
@@ -17,7 +18,7 @@ app.config['SECRET_KEY'] = SECRET_KEY
 app.config['SSL_DISABLE'] = True
 app.config['UPLOAD_FOLDER'] = "static/uploads"
 
-sp = mySpotify()
+
 
 def estado_usuario():
     """Retorna `True` si el usuario esta en una sesión activo."""
@@ -25,7 +26,57 @@ def estado_usuario():
         return True
     else:
         return False
-    
+
+
+@app.route("/add_links", methods=['POST'])
+def add_links():
+    if estado_usuario():
+        if request.method == "POST":
+            order = request.form['track-order']
+            links = dict(
+                youtube=request.form['url-youtube'],
+                tab_guitar_1=request.form['url-guitar-1'],
+                tab_guitar_2=request.form['url-guitar-2'],
+                tab_bass=request.form['url-bass'],
+                link_1=request.form['url-link-1'],
+                link_2=request.form['url-link-2'],
+                link_3=request.form['url-link-3']
+            )
+            
+            File(str(session['list_target'])).add_links(order, links)
+            
+            
+                
+            return redirect(url_for('view_lists'))
+
+@app.route("/login", methods=['POST', 'GET'])
+def login():
+    if request.method == "GET":
+        
+        TerminalMessages.out( f"Ingreso a \'login\': ", ip=request.remote_addr )
+        
+        return render_template("login.html") 
+    else:
+        email = request.form['email']
+        password = request.form['password']
+        
+        usr = consultar_usuario( email, password )
+
+        if (usr):
+            session['email'] = usr['email']
+            session['nickname'] = usr['nickname']
+            session['id'] = usr['id']
+            # Si existe el usuario en la db:
+            
+            TerminalMessages.out( f"Inicio sesion: ", user=session['nickname'] )
+            
+            return redirect(url_for("index"))
+        else:
+            
+            TerminalMessages.out( f"Error de inicio de sesion: ", email=email )
+            # Si no existe: 
+            return render_template("login.html", alert=False)
+   
 
 @app.route("/profiles", methods=['GET'])
 def view_profiles():
@@ -43,21 +94,26 @@ def view_profiles():
         
         return render_template("view_profiles.html", state=False, data_users=data_users)
         
-@app.route("/add_fav", methods=["POST"])
+@app.route("/add_fav", methods=["POST", "GET"])
 def add_fav():
     if estado_usuario():
-       if request.method == 'POST':
+        if request.method == 'POST':
             fav = request.form['fav']
             user_fav, lyst_target, order = fav.split('&')
 
-            track = File(str(lyst_target)).add_fav(session['id'],order)
+            File(str(lyst_target)).add_fav( session['id'], order )
             
             data = File(lyst_target).get_data()
             info = File(lyst_target).get_info()
 
-            TerminalMessages.out( f"~ El usuario \'{session['nickname']=}\' dio Favorito a ", track=track, list_target=lyst_target, order=order )
+            TerminalMessages.out( f"~ El usuario \'{session['nickname']=}\' dio Favorito a ", list_target=lyst_target, order=order )
 
-            return render_template("view_public_list.html", state=True, nickname=session['nickname'], data=data, info=info['name'], lyst_target=lyst_target, user_list=user_fav)
+            return render_template("view_public_list.html", state=True, nickname=session['nickname'], data=data, info=info, lyst_target=lyst_target, user_list=user_fav, path=session['path_img_target'])
+        if request.method == 'GET':
+            data = File(lyst_target).get_data()
+            info = File(lyst_target).get_info()
+            return render_template("view_public_list.html", state=True, nickname=session['nickname'], data=data, info=info, lyst_target=lyst_target, path=session['path_img_target'])
+            
 
 @app.route("/lyst")
 def view_public_list():
@@ -66,23 +122,30 @@ def view_public_list():
         user = request.args.get('user')
         id_list = request.args.get('id_list')
         
+        path =obtener_imagen_perfil(user)
+        
+        session['path_img_target']= path
+        
         data = File(id_list).get_data()
         info = File(id_list).get_info()
         
         TerminalMessages.out( f"El usuario \'{session['nickname']}\' ingreso a la lista ", lista=info['name'] )
         
-        return render_template("view_public_list.html", state=True, nickname=session['nickname'], data=data, info=info['name'], lyst_target=id_list, user_list=user)
+        return render_template("view_public_list.html", state=True, nickname=session['nickname'], data=data, info=info, lyst_target=id_list, user_list=user, path=path)
     else:
         
         user = request.args.get('user')
         id_list = request.args.get('id_list')
+        
+        path = obtener_imagen_perfil(user)
+        
         
         data = File(id_list).get_data()
         info = File(id_list).get_info()
         
         TerminalMessages.out( f"El usuario \'{request.remote_addr}\' ingreso a la lista ", lista=info['name'] )
         
-        return render_template("view_public_list.html", state=False, data=data, info=info['name'])
+        return render_template("view_public_list.html", state=False, data=data, info=info, path=path, lyst_target=id_list, user_list=user)
 
 
 @app.route("/edit_profile", methods=['GET', 'POST'])
@@ -127,33 +190,7 @@ def index():
             
             return render_template("index.html",state=False)
 
-@app.route("/login", methods=['POST', 'GET'])
-def login():
-    if request.method == "GET":
-        
-        TerminalMessages.out( f"Ingreso a \'login\': ", ip=request.remote_addr )
-        
-        return render_template("login.html") 
-    else:
-        email = request.form['email']
-        password = request.form['password']
-        
-        alert, nickname, user_id = consultar_usuario(email, password)
 
-        if (alert):
-            session['email'] = email
-            session['nickname'] = nickname
-            session['id'] = user_id
-            # Si existe el usuario en la db:
-            
-            TerminalMessages.out( f"Inicio sesion: ", user=session['nickname'] )
-            
-            return redirect(url_for("index"))
-        else:
-            
-            TerminalMessages.out( f"Error de inicio de sesion: ", email=email )
-            # Si no existe: 
-            return render_template("login.html", alert=alert)
     
 @app.route("/sign_up", methods=['GET', 'POST'])
 def sign_up():
@@ -200,18 +237,18 @@ def search():
             return render_template("search.html", state=False)
     if request.method == 'POST':
         if estado_usuario():
-            search = request.form['artist']
-            data = sp.search(search)
-            
-            session['genres'] = data[0]['genres']
+            sought = request.form['artist']
+            result = mySpotify().search(sought)
+             
+            session['genres'] = result[0]['genres']
             
             lyst_user = obtener_listas(session['id'])
-            print(lyst_user)
-            return render_template("results.html", state=estado_usuario(), nickname=session['nickname'], albums=data, artist=search, lyst_user=lyst_user)
+            
+            return render_template("results.html", state=estado_usuario(), nickname=session['nickname'], albums=result, artist=result[0]['artist'], lyst_user=lyst_user)
         else:
-            search = request.form['artist']
-            data = sp.search(search)
-            return render_template("results.html", state=False, albums=data, artist=search)
+            sought = request.form['artist']
+            result = mySpotify().search(sought)
+            return render_template("results.html", state=False, albums=result, artist=result[0]['artist'])
 
 @app.route("/add_tracks", methods=['GET', 'POST'])
 def add_tracks():
@@ -230,7 +267,7 @@ def add_tracks():
                 
                 total_time, amount, new_gen = File(str(id_list)).data_insert(tracks, lyst_gen, error)
                 
-                actualizar_lista( id_list, amount, total_time, "private", new_gen )
+                actualizar_lista( id_list, amount, total_time, "private", new_gen, None, None )
                 
                 return redirect(url_for("search"))
                 
@@ -255,6 +292,27 @@ def add_track_manual():
             actualizar_lista( session['list_target'], amount, total_time, "private", new_gen )
             
             return redirect( url_for("edit_list") )
+        
+        
+@app.route("/edit_track", methods=["POST"])       
+def edit_track():
+    if estado_usuario():
+        if request.method == 'POST':
+            
+            data = dict(
+                order=request.form['order'],
+                artist=request.form['artist'],
+                album=request.form['album'],
+                track=request.form['track'],
+                time=request.form['time']
+            )
+            
+            total_time, amount = File(session['list_target']).edit_data(data)
+            if total_time is not None:
+                actualizar_time(session['list_target'], total_time)
+                
+            return redirect( url_for("edit_list") )
+        
    
 @app.route("/create_list", methods=['GET', 'POST'])
 def create_list():
@@ -272,7 +330,6 @@ def create_list():
             alerts = AlertMessages.view_list( name, description, id_lista )
             
             if ( id_lista is None ):
-                print( f"{session['id']=} - {name=} - {description=}" )
                 id_lista = agregar_lista( session['id'], name, description )
                 File( str( id_lista ) ).fcreate( session['id'], 
                                                 name, 
@@ -292,13 +349,14 @@ def edit_list():
             data = File(str(list_target)).get_data() 
             info = File(str(list_target)).get_info()
             
+            
             genres = DataMethods.GENRES
             
             return render_template("edit_list.html", state=True, nickname=session['nickname'], data=data, info=info, genres=genres)
         if request.method == 'GET':
             data = File(str(session['list_target'])).get_data() 
             info = File(str(session['list_target'])).get_info()
-            genres = DataMethods.GENRES
+            genres = DataMethods.GENRES 
             return render_template("edit_list.html", state=True, nickname=session['nickname'], data=data, info=info, genres=genres)
 
 @app.route("/save_list", methods=['POST'])  
@@ -319,10 +377,7 @@ def save_list():
                                                     order=DataMethods.listString_to_listInt(request.form.getlist('order')), 
                                                     time=request.form.getlist('time'),
                                                     genres=lyst_genre,
-                                                    fav=lyst_fav)
-            
-            for item in lyst:
-                print(item)
+                                                    fav=lyst_fav )
             
             if (lyst != []):
                 total_time, amount = DataMethods.recount( lyst )
@@ -332,19 +387,18 @@ def save_list():
             
             new_genre = File(str(session['list_target'])).overrite( lyst, name=name, description=description, privacy=privacy, total_time=total_time, amount=amount )
             
-            actualizar_lista( session['list_target'], amount, total_time, privacy, {'gen': new_genre} )
+            actualizar_lista( session['list_target'], amount, total_time, privacy, {'gen': new_genre}, description, name )
             
             return redirect( url_for("edit_list") )
-
 
 @app.route("/view_lists", methods=['GET', 'POST'])
 def view_lists():
     if estado_usuario():
         if request.method == 'GET':
             lysts_db = obtener_listas( session['id'] )
-            print(f"{lysts_db=}")
+
             data = File.get_lists( lysts_db )
-            print(f"{data=}")
+
             return render_template("view_lists.html", state=True, nickname=session['nickname'], data=data)
         
 @app.route("/delete_list", methods=['POST'])
@@ -363,10 +417,9 @@ def test():
     return render_template("test.html")
 
 if __name__=="__main__":
-    app.run(port=80, host='0.0.0.0', debug=True)
+    #app.run(port=80, host='0.0.0.0', debug=True)
     #serve(app, host='0.0.0.0', port=80, threads=2)
-    #app.run(debug=True)
-    #app.run()
+    app.run(debug=True)
     
     
     # unistall gunicorn, urwid

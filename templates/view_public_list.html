@@ -2,8 +2,39 @@
 
 {% block view_public_list %}
 
+
+
 <div class="card-title text-center mt-5 pt-5" >
-    <h1 class="text-secondary display-2">{{info}}</h1>
+    <h1 class="text-secondary display-2">{{info['name']}}</h1>
+</div>
+
+<div class="card mb-4 d-flex flex-row align-items-center">
+    <div class="m-1 mx-2">
+        
+            
+        <img style="border-radius: 10%; border: 2px solid grey;" src="{{ url_for('static', filename='/uploads/' + path) }}" width="200px" >
+        
+        
+        
+    </div>
+    <div class="card-body">
+        <h4 class="card-title">{{user_list}}</h4>
+        <h6 class="card-subtitle mb-2 text-muted">{{info['name']}}</h6>
+        <p class="card-text">{{info['description']}}</p>
+
+        <ul class="list-group w-50 opacity-75 mb-3">
+            <li class="list-group-item list-group-item-dark d-flex justify-content-between align-items-center ">
+                amount tracks
+                <span class="badge bg-primary rounded-pill font-monospace">{{info['amount']}}</span>
+            </li>
+            <li class="list-group-item list-group-item-dark d-flex justify-content-between align-items-center ">
+                total time
+                <span class="badge bg-primary rounded-pill font-monospace">{{info['total_time']}}</span>
+            </li>
+        </ul>
+        <a href="#" class="card-link">Card link</a>
+        <a href="#" class="card-link">Another link</a>
+    </div>
 </div>
 
 <div class="navbar p-3" data-bs-theme="dark">
@@ -15,12 +46,14 @@
                     <th class="text-primary-emphasis" scope="col"><strong>Track</strong></th>
                     <th class="text-primary-emphasis" scope="col"><strong>Artist / Album</strong></th>
                     <th class="text-primary-emphasis" scope="col"><strong>Time</strong></th>
-                    <th class="text-primary-emphasis col-sm-2" scope="col"><strong>Fav</strong></th>
+                    <th class="text-primary-emphasis" scope="col"><strong>lkn</strong></th>
+                    <th class="text-primary-emphasis" scope="col"><strong>Fav</strong></th>
+                    <th class="text-primary-emphasis" scope="col"><strong></strong></th>
                 </tr>
             </thead>
             <tbody>
             {% for item in data %}
-                <tr>
+                <tr >                   
                     <!-- order -->
                     <td><input type="hidden" name="order" value="{{item['order']}}">{{item['order']}}</td>
                     <!-- track -->
@@ -32,22 +65,26 @@
                         <input class="row-cols-1" type="hidden" name="album" value="{{item['album']}}"><small class="text-secondary">{{item['album']}}</small>
                     </td> 
                     <!-- time -->
-                    <td class="align-middle"><input type="hidden" name="time" value="{{item['time']}}">{{item['time']}}
-                    </td>
-                    <td class="row align-items-start ">
+                    <td class="align-middle"><input type="hidden" name="time" value="{{item['time']}}">{{item['time']}}</td>
+                    <td class="align-middle"><img data-bs-toggle="modal" data-bs-target="#modal-info" onclick="info_public(this);" class="mx-2" src="{{url_for('static', filename='img/icon-link-2.png')}}" width="25px" height="25px"></td>
+                    <!-- fav -->
+                    <td class="align-middle align-items-start ">
                         {% if state == True %}
                             <form class="col-3 " action="/add_fav" method="POST">
                                 <button type="submit" class="bg-primary"  name="fav" value="{{ user_list }}&{{lyst_target}}&{{ item['order'] }}">👍</button>
                             </form>
                         {% else %}
-                            <button disabled type="button" class="col-3 bg-primary"  name="" value="">👍</button>
+                            <button disabled type="button" class="bg-primary"  name="" value="">👍</button>    
+                            {% endif %}
                         </form>
 
-                        {% endif %}
-
+                        
+                    </td>
+                    <input type="hidden" name="" class="data_track" value="{{item['links']}}">
+                    <td>
                         {% if item['fav'] %}
                             {% for f in item['fav'] %}
-                                {% if loop.index <= 3 %}
+                                {% if loop.index <= 4 %}
                                     <label class="col-1">⭐</label>         
                                 {% endif %}
                             {% endfor %}
@@ -63,8 +100,76 @@
     
 </div> 
 
+<!-- TODO: MODAL -->
+<div class="modal fade" id="modal-info" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+                    <!-- ! body modal -->
+                    <table class="table d-inline-grid>
+                        <input type="hidden" id="track-order" name="track-order" value="">
+                        <tbody>
+                            <tr class="">
+                                <td class="align-middle"><img class="mx-2" src="{{url_for('static', filename='img/icon-youtube.png')}}" width="25px" height="25px"></td>
+                                <td class="align-middle text-end">URL TRACK</td>
+                                <td class="align-middle"><a href="" target="_blank" id="url-youtube"><button  class="px-3 w-100">Go</button></a></td>
+                            </tr>
+                            <tr>
+                                <td class="text-warning-emphasis">TABLATURES</td>
+                            </tr>
+                            <tr class="">
+                                <td class="align-middle "><img class="mx-2" src="{{url_for('static', filename='img/icon-guitar-solo.png')}}" width="25px" height="25px"></td>
+                                <td class="align-middle text-end">GUITAR 1</td>
+                                <td class="align-middle"><a href="" target="_blank" id="url-guitar-1"><button class="px-3 w-100">Go</button></a></td>
+                            </tr>
+                            <tr>
+                                <td class="align-middle"><img class="mx-2" src="{{url_for('static', filename='img/icon-guitar-rit.png')}}" width="25px" height="25px"></td>
+                                <td class="align-middle text-end">GUITAR 2</td>
+                                <td class="align-middle"><a href="" target="_blank" id="url-guitar-2"><button class="px-3 w-100">Go</button></a></td>
+                            </tr>
+                            <tr>
+                                <td class="align-middle"><img class="mx-2" src="{{url_for('static', filename='img/icon-bass.png')}}" width="25px" height="25px"></td>
+                                <td class="align-middle text-end">BASS</td>
+                                <td class="align-middle"><a href="" target="_blank" id="url-bass"><button class="px-3 w-100">Go</button></a></td>
+                            </tr>
+                            <tr>
+                                <td class="text-warning-emphasis">ANOTHER LINKS: </td>
+                            </tr>
+                            <tr>
+                                <td class="align-middle"><img class="mx-2" src="{{url_for('static', filename='img/icon-link.png')}}" width="25px" height="25px"></td>
+                                <td class="align-middle text-end">LINK 1</td>
+                                <td class="align-middle"><a href="" target="_blank" id="url-link-1"><button class="px-3 w-100">Go</button></a></td>
+                            </tr>
+                            <tr>
+                                <td class="align-middle"><img class="mx-2" src="{{url_for('static', filename='img/icon-link.png')}}" width="25px" height="25px"></td>
+                                <td class="align-middle text-end">LINK 2</td>
+                                <td class="align-middle"><a href="" target="_blank" id="url-link-2"><button class="px-3 w-100">Go</button></a></td>
+                            </tr>
+                            <tr>
+                                <td class="align-middle"><img class="mx-2" src="{{url_for('static', filename='img/icon-link.png')}}" width="25px" height="25px"></td>
+                                <td class="align-middle text-end">LINK 3</td>
+                                <td class="align-middle"><a href="" target="_blank" id="url-link-3"><button class="px-3 w-100">Go</button></a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            
+        </div>
+    </div>
+</div>
+
 
 <div style="height: 30px;">
 
 </div>
+
+
 {% endblock  %}

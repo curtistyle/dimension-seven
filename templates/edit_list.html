@@ -21,46 +21,49 @@
                     <textarea name="description" class="form-control mx-2" id="exampleTextarea" rows="3">{{info['description']}}</textarea>
                 </div>
                 
-                <!-- button radio PRIVACY-->
-                <div class="form-group d-blocck ">
-                    <div class="form-label">
-                        <label class="mt-2 text-info" for="inputDefault">Privacy list</label>
+                <div class="modal-body d-inline-flex justify-content-between px-1">
+
+                    <!-- button radio PRIVACY-->
+                    <div class="form-group col-4 ">
+                        <div class="form-label">
+                            <label class="mt-2 text-info" for="inputDefault">Privacy list</label>
+                        </div>
+                        <div class=" btn-group mx-2" role="group" aria-label="Basic radio toggle button group">
+                            {% if info['privacy'] == 'private' %}
+                                <!-- PRIVATE  1 cheked-->
+                                <input value="private" type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
+                                <label class="btn btn-outline-danger" for="btnradio1">Private</label>
+                                <!-- PUBLIC  2-->
+                                <input value="public" type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
+                                <label class="btn btn-outline-success" for="btnradio2">Public</label>
+                            {% else %}
+                                <!-- PRIVATE  1-->
+                                <input value="private" type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off">
+                                <label class="btn btn-outline-danger" for="btnradio1">Private</label>
+                                <!-- PUBLIC  2-->
+                                <input value="public" type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off" checked>
+                                <label class="btn btn-outline-success" for="btnradio2">Public</label>
+                            {% endif %}
+                        </div>
                     </div>
-                    <div class=" btn-group mx-2" role="group" aria-label="Basic radio toggle button group">
-                        {% if info['privacy'] == 'private' %}
-                            <!-- PRIVATE  1 cheked-->
-                            <input value="private" type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
-                            <label class="btn btn-outline-danger" for="btnradio1">Private</label>
-                            <!-- PUBLIC  2-->
-                            <input value="public" type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
-                            <label class="btn btn-outline-success" for="btnradio2">Public</label>
-                        {% else %}
-                            <!-- PRIVATE  1-->
-                            <input value="private" type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off">
-                            <label class="btn btn-outline-danger" for="btnradio1">Private</label>
-                            <!-- PUBLIC  2-->
-                            <input value="public" type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off" checked>
-                            <label class="btn btn-outline-success" for="btnradio2">Public</label>
-                        {% endif %}
+                
+                    <!-- Button trigger modal ADD MANUAL TRACK -->
+                    <div class="form-group col-5 mx-2">
+                        <div class="">
+                            <label class="mt-2 text-info" for="inputDefault">Add manual</label>
+                        </div>
+                        <button type="button" class="btn btn-success mx-2 mt-2 px-3" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                            + TRACK
+                        </button>
                     </div>
+            
                 </div>
-            
-                <!-- Button trigger modal -->
-                <div class="form-group d-blocck ">
-                    <div class="">
-                        <label class="mt-2 text-info" for="inputDefault">Add manual track</label>
-                    </div>
-                    <button type="button" class="btn btn-success mx-2 px-3" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                        + ADD
-                    </button>
-                </div>
-            
-            </div>
-            
-            
-            
+
+            </div>     
       </div>
 
+
+      <!-- TODO: List  -->
     <div class="card-body" data-bs-theme="light">
         <table  id="table" class="table table-hover">
             <thead>
@@ -76,22 +79,31 @@
             {% for item in data %}
             <tr class="table-dark">
                 <!-- order -->
-                <td><input type="hidden" name="order" value="{{item['order']}}">{{item['order']}}</td>
+                <td><input id="order" type="hidden" name="order" value="{{item['order']}}">{{item['order']}}</td>
                 <td class="d-flex flex-column">
                     <!-- artist -->
-                    <input type="hidden" name="artist" value="{{item['artist']}}">{{item['artist']}}
+                    <input id="artist" type="hidden" name="artist" value="{{item['artist']}}">{{item['artist']}}
                     <!-- album -->
-                    <input type="hidden" name="album" value="{{item['album']}}"><small class="text-secondary">{{item['album']}}</small>
+                    <input id="album" type="hidden" name="album" value="{{item['album']}}"><small class="text-secondary">{{item['album']}}</small>
                 </td> 
                 <!-- track -->
-                <td class="align-middle"><input type="hidden" name="track" value="{{item['track']}}">{{item['track']}}</td>
+                <td class="align-middle"><input id="track" type="hidden" name="track" value="{{item['track']}}">{{item['track']}}</td>
                 <!-- time -->
-                <td class="align-middle"><input type="hidden" name="time" value="{{item['time']}}">{{item['time']}}</td>
+                <td class="align-middle"><input id="time" type="hidden" name="time" value="{{item['time']}}">{{item['time']}}</td>
                 <td class="align-middle">
-                    <img class="mx-2" src="{{url_for('static', filename='img/info.png')}}" width="25px" height="25px">
+                    
+                    <!-- ? info -->
+                    <a type="button" onclick="info(this);" data-bs-toggle="modal" data-bs-target="#modal-info"><img class="mx-2" src="{{url_for('static', filename='img/info.png')}}" width="25px" height="25px"></a>
+                    <!-- ? delete -->
                     <a type="button" onclick="pop(this);"><img class="mx-2" src="{{url_for('static', filename='img/garbage_collector.png')}}" width="25px" height="25px"></a>
+                    <!-- ? edit -->
+                    <a type="button" onclick="edit(this);" data-bs-toggle="modal" data-bs-target="#modal-edit"><img class="mx-2" src="{{url_for('static', filename='img/edit.png')}}" width="25px" height="25px"></a>
+                    <!-- hidden vars -->
                     <input type="hidden" name="fav" value="{{item['fav']}}">
                     <input type="hidden" name="genres" value="{{item['genres']}}">
+
+                    <input type="hidden" name="" class="data_track" value="{{item['links']}}">
+                
                 </td>
             </tr>
             {% endfor %}
@@ -167,6 +179,122 @@
         </div>
     </div>
 </div>
+
+
+<!-- TODO: MODAL INFO -->
+<div class="modal fade" id="modal-info" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="/add_links" method="POST">
+                    <!-- ! body modal -->
+                    <table class="table">
+                        <input type="hidden" id="track-order" name="track-order" value="">
+                        <tbody>
+                            <tr>
+                                <td><img class="mx-2" src="{{url_for('static', filename='img/icon-youtube.png')}}" width="25px" height="25px"></td>
+                                <td>URL TRACK</td>
+                                <td><input type="url" name="url-youtube" id="url-youtube"></td>
+                            </tr>
+                            <tr>
+                                <td>TABLATURES</td>
+                            </tr>
+                            <tr>
+                                <td><img class="mx-2" src="{{url_for('static', filename='img/icon-guitar-solo.png')}}" width="25px" height="25px"></td>
+                                <td>GUITAR 1</td>
+                                <td><input type="url" name="url-guitar-1" id="url-guitar-1"></td>
+                            </tr>
+                            <tr>
+                                <td><img class="mx-2" src="{{url_for('static', filename='img/icon-guitar-rit.png')}}" width="25px" height="25px"></td>
+                                <td>GUITAR 2</td>
+                                <td><input type="url" name="url-guitar-2" id="url-guitar-2"></td>
+                            </tr>
+                            <tr>
+                                <td><img class="mx-2" src="{{url_for('static', filename='img/icon-bass.png')}}" width="25px" height="25px"></td>
+                                <td>BASS</td>
+                                <td><input type="url" name="url-bass" id="url-bass"></td>
+                            </tr>
+                            <tr>
+                                <td>ANOTHER LINKS: </td>
+                            </tr>
+                            <tr>
+                                <td><img class="mx-2" src="{{url_for('static', filename='img/icon-link.png')}}" width="25px" height="25px"></td>
+                                <td>LINK 1</td>
+                                <td><input type="url" name="url-link-1" id="url-link-1"></td>
+                            </tr>
+                            <tr>
+                                <td><img class="mx-2" src="{{url_for('static', filename='img/icon-link.png')}}" width="25px" height="25px"></td>
+                                <td>LINK 2</td>
+                                <td><input type="url" name="url-link-2" id="url-link-2"></td>
+                            </tr>
+                            <tr>
+                                <td><img class="mx-2" src="{{url_for('static', filename='img/icon-link.png')}}" width="25px" height="25px"></td>
+                                <td>LINK 3</td>
+                                <td><input type="url" name="url-link-3" id="url-link-3"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-outline-success">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal edit -->
+<div class="modal fade" id="modal-edit" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="title-modal"></h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="/edit_track" method="POST">
+                <div class="modal-body">
+                
+                <table class="table">
+                    <input id="order-edit" id="order-edit" type="hidden" name="order" value="">
+                    <tbody>
+                        <tr >
+                            <td ><label for="">Artist:</label></td>
+                            <td ><input id="artist-edit" class="w-100" type="text" name="artist" value=""></td>
+                        </tr>
+                        <tr>
+                            <td><label for="">Album:</label></td>
+                            <td><input id="album-edit" class="w-100" type="text" name="album" value=""></td>
+                        </tr>
+                        <tr>
+                            <td><label for="">Track:</label></td>
+                            <td><input id="track-edit" class="w-100" type="text" name="track" value=""></td>
+                        </tr>
+                        <tr>
+                            <td><label for="">Time:</label></td>
+                            <td><input id="time-edit" class="w-25" type="text" name="time" value=""></td>
+                        </tr>
+                        <tr>
+                            <td><label  for="range">Progress:</label></td>
+                            <td><input value="0" min="0" max="100" step="1" id="range" type="range" class="w-75" name="range"><label class="mx-3" id="label-range"></label></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-outline-success">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 
 
 <script src="{{url_for('static', filename='js/main.js')}}"></script>

@@ -1,11 +1,122 @@
-// var radio_btn = document.getElementById('btnradio1')
+var range = document.getElementById("range").addEventListener('input', printValueRange)
+var label_range = document.getElementById("label-range")
+
+function printValueRange(){
+    data = document.getElementById("range").value
+
+    label_range.innerHTML = data + "%";
+}
+
+function edit(element){
+    var data = element.parentNode.parentNode 
+
+    // get data from table edit
+    var order = data.querySelector("#order").value
+    var artist = data.querySelector("#artist").value
+    var album = data.querySelector("#album").value
+    var track = data.querySelector("#track").value
+    var time = data.querySelector("#time").value
 
 
+    // modal edit
+    var modal_edit = document.getElementById("modal-edit")
+    
+
+    //set data in table modal
+    
+    modal_edit.querySelector("#order-edit").value = order
+    modal_edit.querySelector("#artist-edit").value = artist
+    modal_edit.querySelector("#album-edit").value = album
+    modal_edit.querySelector("#track-edit").value = track
+    modal_edit.querySelector("#time-edit").value = time
+    
+    modal_edit.querySelector("#title-modal").innerText = order + " - " + track
+}   
+
+function info_public(element){
+    console.log()
+    var track = element.parentNode.parentNode.childNodes[7].innerText
+
+
+    var modalInfo = document.getElementById('exampleModalLabel')
+    modalInfo.innerText = track
+
+    //console.log(element.parentNode.parentNode.parentNode.getElementsByClassName('data_track')[0].value)
+    var data = element.parentNode.parentNode.getElementsByClassName('data_track')[0].value
+    
+    // var data = element.parentNode.parentNode.getElementsByClassName('data_track')[0].value
+
+    if (data){
+
+        console.log("verdadero")
+        var data_format = data.split("\'").join("\"")
+
+        var data_json = JSON.parse(data_format)
+    
+        //console.log(element.parentNode.parentNode.getElementsByClassName('data_track')[0].value)
+    
+    
+        document.getElementById("url-youtube").href = data_json.youtube
+        document.getElementById("url-guitar-1").href = data_json.tab_guitar_1
+        document.getElementById("url-guitar-2").href = data_json.tab_guitar_2
+        document.getElementById("url-bass").href = data_json.tab_bass
+        document.getElementById("url-link-1").href = data_json.link_1
+        document.getElementById("url-link-2").href = data_json.link_2
+        document.getElementById("url-link-3").href = data_json.link_3
+
+    }else{
+        console.log("falso")
+
+        document.getElementById("url-youtube").href = ""
+        document.getElementById("url-guitar-1").href = ""
+        document.getElementById("url-guitar-2").href = ""
+        document.getElementById("url-bass").href = ""
+        document.getElementById("url-link-1").href = ""
+        document.getElementById("url-link-2").href = ""
+        document.getElementById("url-link-3").href = ""
+    }
+
+
+
+
+    
+
+}
+
+
+function info(element){
+    var order = element.parentNode.parentNode.firstElementChild.childNodes[0]
+    order = order.value
+
+    var track = element.parentNode.parentNode.childNodes[9].childNodes[0]
+    track = track.value
+
+    var modalInfo = document.getElementById('exampleModalLabel')
+    modalInfo.innerText = track
+
+    var orderModal = document.getElementById('track-order')
+    orderModal.value = order
+
+    var data = element.parentNode.parentNode.getElementsByClassName('data_track')[0].value
+
+    var data_format = data.split("\'").join("\"")
+
+    var data_json = JSON.parse(data_format)
+
+
+    document.getElementById("url-youtube").value = data_json.youtube
+    document.getElementById("url-guitar-1").value = data_json.tab_guitar_1
+    document.getElementById("url-guitar-2").value = data_json.tab_guitar_2
+    document.getElementById("url-bass").value = data_json.tab_bass
+    document.getElementById("url-link-1").value = data_json.link_1
+    document.getElementById("url-link-2").value = data_json.link_2
+    document.getElementById("url-link-3").value = data_json.link_3
+}
 
 
 function pop(element){
     var table = document.getElementById("table")
-    console.log()
+    
     index=element.parentNode.parentNode.cells[0].innerText
     element.parentNode.parentNode.remove()
     console.log("index: " + index)
@@ -14,7 +125,6 @@ function pop(element){
         console.log( table.rows[i] )
     }
 }
-
 
 // ? view_list.html modal 
 function deletelist(value){
@@ -25,9 +135,6 @@ function deletelist(value){
     btn_delete.value = value
 }
 
-
-
-
 var index;  // variable to set the selected row indexs
 var table_len;
 function getSelectedRow()
@@ -37,7 +144,6 @@ function getSelectedRow()
 
     for(var i = 1; i < table.rows.length; i++)
     {
-        
         table.rows[i].onclick = function()
         {
             // clear the selected from the previous selected row
@@ -49,8 +155,6 @@ function getSelectedRow()
             
             index = this.rowIndex;
             
-            
-
             this.classList.toggle("table-dark");
 
         };
